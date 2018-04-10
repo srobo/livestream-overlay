@@ -1,0 +1,220 @@
+<html>
+
+<head>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- Top match info -->
+<div id="overlay-top">
+	<div id="overlay-top-content">
+		<div class="background"></div>
+		<div class="text">
+			<p><span class="match-type">League:</span><span class="match-id">20/36</span></p>
+		</div>
+	</div>
+</div>
+
+
+<!-- Bottom ticker and zones -->
+<div id="overlay-bottom">
+	<div id="overlay-content">
+	<div id="sourcebots-logo">
+		<img src="SourceBots.png">
+	</div>
+	<div id="match-counter">
+		<div class="background"></div>
+		<div class="timer"><p><span>Next Match: </span><span class="clock">2:34</span></p></div>
+	</div>
+	<div id="zones">
+		<ul>
+			<li class="purple">
+				<div class="background"></div>
+				<div class="team"><p>BBC: British Broadcasting corp</p></div>
+			</li>
+			<li class="green">
+				<div class="background"></div>
+				<div class="team"><p>NSA: National Security Agency</p></div>
+			</li>
+			<li class="yellow">
+				<div class="background"></div>
+				<div class="team"><p>BOB: Box of Boxes</p></div>
+			</li>
+			<li class="orange">
+				<div class="background"></div>
+				<div class="team"><p>RPF: Raspbery Pi Foundation</p></div>
+			</li>
+		</ul>
+	</div>
+	</div>	
+</div>
+
+
+<!-- Side bar scores -->
+<div id="overlay-side">
+	<div id="overlay-side-scores">
+		<div class="sbox-med">
+			<div class="background"></div>
+			<div class="heading"><h2>League scores</h2></div>
+		</div>
+		<div class="table">
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">1</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">2</span><span>NSA</span><span class="score">2</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">3</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">4</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">5</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">6</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">7</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+		<div class="row sbox-small">
+			<div class="text"><p><span class="position">8</span><span>BBC</span><span class="score">4</span></p></div>
+		</div>
+
+		</div>
+	</div>
+	<div id="overlay-side-upnext" class="hidden">
+		<div class="sbox-med">
+			<div class="background"></div>
+			<div class="heading"><h2>Up Next</h2></div>
+                </div>
+	</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+overlay={}
+
+overlay.hideScores=function()
+{
+    $("#overlay-side-scores").addClass("hidden");
+}
+
+overlay.showScores=function()
+{
+    $("#overlay-side-scores").removeClass("hidden");
+}
+
+overlay.hideNext=function()
+{
+    $("#overlay-side-upnext").addClass("hidden");
+}
+
+overlay.showNext=function()
+{
+    $("#overlay-side-upnext").removeClass("hidden");
+}
+
+overlay.hideZones=function()
+{
+    $("#zones").addClass("hidden");
+}
+
+overlay.showZones=function()
+{
+    $("#zones").removeClass("hidden");
+}
+
+
+overlay.setMatchCounter=function(mode)
+{
+    switch(mode) {
+        case "pre":
+            $("#match-counter .timer").html("<p><span>Matches begin at: </span><span class=\"clock\">12:12</span></p>")
+            break;
+        case "gap":
+            $("#match-counter .timer").html("<p><span>Next Match: </span><span class=\"clock\">2:34</span></p>")
+            break;
+        case "match":
+            $("#match-counter .timer").html("<p><span class=\"clock\">2:04</span></p>")
+            break;
+        case "interval":
+            $("#match-counter .timer").html("<p><span>Matches resume at: </span><span class=\"clock\">12:12</span></p>")
+            break;
+
+    }
+}
+
+state={}
+
+state.set_pre_comp=function()
+{
+    overlay.hideScores();
+    overlay.setMatchCounter("pre");
+}
+
+state.set_pre_match=function()
+{
+    overlay.showScores();
+    overlay.hideNext();
+    overlay.setMatchCounter("gap");
+    overlay.hideZones();
+}
+
+state.run_pre_match=function()
+{
+    state.set_pre_match();
+    setTimeout(function() {
+        console.log("30s to match");
+        state.match_start_minus_30();
+    },5000); //run 30s script
+    setTimeout(function() {
+        console.log("10s to match")
+        state.match_start_minus_10();
+    },25000); //run 30s script
+    setTimeout(function() {
+        console.log("match start")
+        state.match_start();
+    },35000); //run 30s script
+}
+
+state.match_start_minus_30=function()
+{
+    overlay.hideScores();
+    overlay.showNext();
+}
+
+state.match_start_minus_10=function()
+{
+    overlay.hideNext();
+    overlay.showZones();
+}
+
+state.match_start=function()
+{
+    overlay.setMatchCounter("match");
+}
+
+state.match_end=function()
+{
+    overlay.setMatchCounter("gap");
+    overlay.hideZones();
+}
+
+state.match_end_plus_10=function()
+{
+    overlay.showScores();
+}
+
+
+
+</script>
+
+</body>
+</html>
