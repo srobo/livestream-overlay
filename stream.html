@@ -10,9 +10,8 @@
 
 <!-- Top match info -->
 <div id="overlay-top">
-	<div id="overlay-top-content">
-		<div class="background"></div>
-		<div class="text">
+	<div id="overlay-top-content" class="sbox-small flair">
+		<div class="content">
 			<p><span class="match-type">League:</span><span class="match-id">20/36</span></p>
 		</div>
 	</div>
@@ -25,27 +24,22 @@
 	<div id="sourcebots-logo">
 		<img src="SourceBots.png">
 	</div>
-	<div id="match-counter">
-		<div class="background"></div>
-		<div class="timer"><p><span>Next Match: </span><span class="clock">2:34</span></p></div>
+	<div id="match-counter" class="sbox-med flair">
+		<div class="content timer"><h2><span>Next Match: </span><span class="clock">2:34</span></h2></div>
 	</div>
 	<div id="zones">
 		<ul>
-			<li class="purple">
-				<div class="background"></div>
-				<div class="team"><p>BBC: British Broadcasting corp</p></div>
+			<li class="sbox-small purple">
+				<div class="content"><p>BBC: British Broadcasting corp</p></div>
 			</li>
-			<li class="green">
-				<div class="background"></div>
-				<div class="team"><p>NSA: National Security Agency</p></div>
+			<li class="sbox-small green">
+				<div class="content"><p>NSA: National Security Agency</p></div>
 			</li>
-			<li class="yellow">
-				<div class="background"></div>
-				<div class="team"><p>BOB: Box of Boxes</p></div>
+			<li class="sbox-small yellow">
+				<div class="content"><p>BOB: Box of Boxes</p></div>
 			</li>
-			<li class="orange">
-				<div class="background"></div>
-				<div class="team"><p>RPF: Raspbery Pi Foundation</p></div>
+			<li class="sbox-small orange">
+				<div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
 			</li>
 		</ul>
 	</div>
@@ -56,43 +50,59 @@
 <!-- Side bar scores -->
 <div id="overlay-side">
 	<div id="overlay-side-scores">
-		<div class="sbox-med">
-			<div class="background"></div>
-			<div class="heading"><h2>League scores</h2></div>
+		<div class="sbox-med flair">
+			<div class="content"><h2>League scores</h2></div>
 		</div>
 		<div class="table">
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">1</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">1</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">2</span><span>NSA</span><span class="score">2</span></p></div>
+			<div class="content"><p><span class="position">2</span><span>NSA</span><span class="score">2</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">3</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">3</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">4</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">4</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">5</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">5</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">6</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">6</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">7</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">7</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 		<div class="row sbox-small">
-			<div class="text"><p><span class="position">8</span><span>BBC</span><span class="score">4</span></p></div>
+			<div class="content"><p><span class="position">8</span><span>BBC</span><span class="score">4</span></p></div>
 		</div>
 
 		</div>
 	</div>
 	<div id="overlay-side-upnext" class="hidden">
-		<div class="sbox-med">
-			<div class="background"></div>
-			<div class="heading"><h2>Up Next</h2></div>
+		<div class="sbox-med flair">
+			<div class="content"><h2>Up Next</h2></div>
                 </div>
+		<div class="team-next sbox purple">
+    			<div class="img"><img src="walle.png"></div>
+        		<div class="name"><h2 style="">BBC</h2></div>
+		</div>
+		<div class="team-next sbox green">
+    			<div class="img"><img src="t101.jpg"></div>
+        		<div class="name"><h2 style="">NSA</h2></div>
+		</div>
+		<div class="team-next sbox yellow">
+    			<div class="img"><img src="getty.jpg"></div>
+        		<div class="name"><h2 style="">BOB</h2></div>
+		</div>
+                <div class="team-next sbox orange">
+                        <div class="img"><img src="irobot.jpg"></div>
+                        <div class="name"><h2 style="">RPF</h2></div>
+                </div>
+
+
 	</div>
 </div>
 
@@ -100,6 +110,33 @@
 <script>
 
 overlay={}
+
+overlay.progressCounter={
+
+    show: function()
+    {
+        $("#overlay-top-content").removeClass("hidden");
+    },
+
+    hide: function()
+    {
+        $("#overlay-top-content").addClass("hidden");
+    },
+
+    set_match: function(type,matchNumber,matchesTotal)
+    {
+        if(type=="league")
+        {
+            var prefix = "<span class=\"match-type\">League:</span>"
+            var counter = `<span class="match-id">${matchNumber}/${matchesTotal}</span>`
+            $("#overlay-top-content .text").html(`<p>${prefix}${counter}</p>`);
+        }
+        else
+        {
+            $("#overlay-top-content .text").html(`<p>${type} ${matchNumber}</p>`);
+        }
+    },
+}
 
 overlay.hideScores=function()
 {
@@ -131,23 +168,47 @@ overlay.showZones=function()
     $("#zones").removeClass("hidden");
 }
 
+overlay.matchCounter={
 
-overlay.setMatchCounter=function(mode)
-{
-    switch(mode) {
-        case "pre":
-            $("#match-counter .timer").html("<p><span>Matches begin at: </span><span class=\"clock\">12:12</span></p>")
-            break;
-        case "gap":
-            $("#match-counter .timer").html("<p><span>Next Match: </span><span class=\"clock\">2:34</span></p>")
-            break;
-        case "match":
-            $("#match-counter .timer").html("<p><span class=\"clock\">2:04</span></p>")
-            break;
-        case "interval":
-            $("#match-counter .timer").html("<p><span>Matches resume at: </span><span class=\"clock\">12:12</span></p>")
-            break;
+    set_mode: function(mode)
+    {
+        switch(mode) {
+            case "pre":
+                $("#match-counter").removeClass("clock-only");
+                $("#match-counter .content").html("<h2><span>Matches begin at: </span><span class=\"clock\">12:12</span></h2>")
+                break;
+            case "gap":
+                $("#match-counter").removeClass("clock-only");
+                $("#match-counter .content").html("<h2><span>Next Match: </span><span class=\"clock\">2:34</span></h2>")
+                break;
+            case "match":
+                $("#match-counter").addClass("clock-only");
+                $("#match-counter .content").html("<h2><span class=\"clock\">3:00</span></h2>")
+                break;
+            case "interval":
+                $("#match-counter").removeClass("clock-only");
+                $("#match-counter .content").html("<h2><span>Matches resume at: </span><span class=\"clock\">12:12</span></h2>")
+                break;
+    
+        }
+    },
 
+    matchTimer:0,
+    startMatchCounter: function(time)
+    {
+        var timer = time, minutes, seconds;
+        matchTimer = setInterval(function() {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+            
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            $("#match-counter .timer .clock").text(minutes + ":" + seconds);
+
+            if (--timer < 0) {
+                clearInterval(matchTimer);
+            } 
+        },1000);
     }
 }
 
@@ -156,20 +217,23 @@ state={}
 state.set_pre_comp=function()
 {
     overlay.hideScores();
-    overlay.setMatchCounter("pre");
+    overlay.matchCounter.set_mode("pre");
 }
 
 state.set_pre_match=function()
 {
     overlay.showScores();
     overlay.hideNext();
-    overlay.setMatchCounter("gap");
+    overlay.matchCounter.set_mode("gap");
     overlay.hideZones();
+    overlay.progressCounter.show();
+    overlay.progressCounter.set_match("league",3,36);
 }
 
 state.run_pre_match=function()
 {
     state.set_pre_match();
+    overlay.matchCounter.startMatchCounter(34);
     setTimeout(function() {
         console.log("30s to match");
         state.match_start_minus_30();
@@ -177,17 +241,22 @@ state.run_pre_match=function()
     setTimeout(function() {
         console.log("10s to match")
         state.match_start_minus_10();
-    },25000); //run 30s script
+    },25000); //run 10s script
     setTimeout(function() {
         console.log("match start")
         state.match_start();
-    },35000); //run 30s script
+    },35000); //run start script
+    setTimeout(function() {
+        console.log("match end")
+        state.match_end();
+    },135000);
 }
 
 state.match_start_minus_30=function()
 {
     overlay.hideScores();
     overlay.showNext();
+    overlay.progressCounter.set_match("league",4,36);
 }
 
 state.match_start_minus_10=function()
@@ -198,12 +267,14 @@ state.match_start_minus_10=function()
 
 state.match_start=function()
 {
-    overlay.setMatchCounter("match");
+    overlay.matchCounter.set_mode("match");
+    overlay.matchCounter.startMatchCounter((1*60)-1);
 }
 
 state.match_end=function()
 {
-    overlay.setMatchCounter("gap");
+    overlay.matchCounter.set_mode("gap");
+    overlay.matchCounter.startMatchCounter((1*60)-1);
     overlay.hideZones();
 }
 
