@@ -115,6 +115,7 @@
 
 <script>
 
+/* overlay objects, used to control the overlay display*/
 overlay={}
 
 overlay.progressCounter={
@@ -144,36 +145,45 @@ overlay.progressCounter={
     },
 }
 
-overlay.hideScores=function()
-{
-    $("#overlay-side-scores").addClass("hidden");
+overlay.scores={
+
+    show: function()
+    {
+        $("#overlay-side-scores").removeClass("hidden");
+    },
+
+    hide: function()
+    {
+        $("#overlay-side-scores").addClass("hidden");
+    }
 }
 
-overlay.showScores=function()
-{
-    $("#overlay-side-scores").removeClass("hidden");
+overlay.next={
+
+    show: function()
+    {
+        $("#overlay-side-upnext").removeClass("hidden");
+    },
+
+    hide: function()
+    {
+        $("#overlay-side-upnext").addClass("hidden");
+    }
 }
 
-overlay.hideNext=function()
-{
-    $("#overlay-side-upnext").addClass("hidden");
-}
+overlay.zones = {
 
-overlay.showNext=function()
-{
-    $("#overlay-side-upnext").removeClass("hidden");
-}
+    show: function()
+    {
+        $("#zones").removeClass("hidden");
+        $("#match-counter").removeClass("only");
+    },
 
-overlay.hideZones=function()
-{
-    $("#zones").addClass("hidden");
-    $("#match-counter").addClass("only");
-}
-
-overlay.showZones=function()
-{
-    $("#zones").removeClass("hidden");
-    $("#match-counter").removeClass("only");
+    hide: function()
+    {
+        $("#zones").addClass("hidden");
+        $("#match-counter").addClass("only");
+    }
 }
 
 overlay.matchCounter={
@@ -221,20 +231,23 @@ overlay.matchCounter={
     }
 }
 
+</script>
+<script>
+
 state={}
 
 state.set_pre_comp=function()
 {
-    overlay.hideScores();
+    overlay.scores.hide();
     overlay.matchCounter.set_mode("pre");
 }
 
 state.set_pre_match=function()
 {
-    overlay.showScores();
-    overlay.hideNext();
+    overlay.scores.show();
+    overlay.next.hide();
     overlay.matchCounter.set_mode("gap");
-    overlay.hideZones();
+    overlay.zones.hide();
     overlay.progressCounter.show();
     overlay.progressCounter.set_match("league",3,36);
 }
@@ -276,15 +289,15 @@ state.run_matches=function()
 
 state.match_start_minus_30=function()
 {
-    overlay.hideScores();
-    overlay.showNext();
+    overlay.scores.hide();
+    overlay.next.show();
     overlay.progressCounter.set_match("league",4,36);
 }
 
 state.match_start_minus_10=function()
 {
-    overlay.hideNext();
-    overlay.showZones();
+    overlay.next.hide();
+    overlay.zones.show();
 }
 
 state.match_start=function()
@@ -297,12 +310,12 @@ state.match_end=function()
 {
     overlay.matchCounter.set_mode("gap");
     overlay.matchCounter.startMatchCounter((1*60)-1);
-    overlay.hideZones();
+    overlay.zones.hide();
 }
 
 state.match_end_plus_10=function()
 {
-    overlay.showScores();
+    overlay.scores.show();
 }
 
 
