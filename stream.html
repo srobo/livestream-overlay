@@ -2,7 +2,10 @@
 
 <head>
 
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8"/>
+    <title>Live stream Overlay</title>
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -10,7 +13,7 @@
 
 <!-- Top match info -->
 <div id="overlay-top">
-	<div id="overlay-top-content" class="sbox-small flair">
+	<div id="overlay-top-content" class="sbox-small flair" onclick="state.run_matches()">
 		<div class="content">
 			<p><span class="match-type">League:</span><span class="match-id">20/36</span></p>
 		</div>
@@ -25,7 +28,10 @@
 		<img src="SourceBots.png">
 	</div>
 	<div id="match-counter" class="sbox-med flair">
-		<div class="content timer"><h2><span>Next Match: </span><span class="clock">2:34</span></h2></div>
+		<div class="content timer"><h2>
+            <span class="clock">2:34</span>
+            <span class="clock-info">Next Match: </span>
+        </h2></div>
 	</div>
 	<div id="zones">
 		<ul>
@@ -129,11 +135,11 @@ overlay.progressCounter={
         {
             var prefix = "<span class=\"match-type\">League:</span>"
             var counter = `<span class="match-id">${matchNumber}/${matchesTotal}</span>`
-            $("#overlay-top-content .text").html(`<p>${prefix}${counter}</p>`);
+            $("#overlay-top-content .content").html(`<p>${prefix}${counter}</p>`);
         }
         else
         {
-            $("#overlay-top-content .text").html(`<p>${type} ${matchNumber}</p>`);
+            $("#overlay-top-content .content").html(`<p>${type} ${matchNumber}</p>`);
         }
     },
 }
@@ -161,11 +167,13 @@ overlay.showNext=function()
 overlay.hideZones=function()
 {
     $("#zones").addClass("hidden");
+    $("#match-counter").addClass("only");
 }
 
 overlay.showZones=function()
 {
     $("#zones").removeClass("hidden");
+    $("#match-counter").removeClass("only");
 }
 
 overlay.matchCounter={
@@ -175,29 +183,29 @@ overlay.matchCounter={
         switch(mode) {
             case "pre":
                 $("#match-counter").removeClass("clock-only");
-                $("#match-counter .content").html("<h2><span>Matches begin at: </span><span class=\"clock\">12:12</span></h2>")
+                $("#match-counter .clock-info").html("Matches begin at:");
                 break;
             case "gap":
                 $("#match-counter").removeClass("clock-only");
-                $("#match-counter .content").html("<h2><span>Next Match: </span><span class=\"clock\">2:34</span></h2>")
+                $("#match-counter .clock-info").html("Next Match:")
                 break;
             case "match":
                 $("#match-counter").addClass("clock-only");
-                $("#match-counter .content").html("<h2><span class=\"clock\">3:00</span></h2>")
+                $("#match-counter .clock-info").html("")
                 break;
             case "interval":
                 $("#match-counter").removeClass("clock-only");
-                $("#match-counter .content").html("<h2><span>Matches resume at: </span><span class=\"clock\">12:12</span></h2>")
+                $("#match-counter .clock-info").html("Matches resume at:")
                 break;
     
         }
+        $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
     },
 
-    matchTimer:0,
     startMatchCounter: function(time)
     {
         var timer = time, minutes, seconds;
-        matchTimer = setInterval(function() {
+        var matchTimer = setInterval(function() {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
             
@@ -205,7 +213,8 @@ overlay.matchCounter={
 
             $("#match-counter .timer .clock").text(minutes + ":" + seconds);
 
-            if (--timer < 0) {
+            timer=timer-1;
+            if (timer < 0) {
                 clearInterval(matchTimer);
             } 
         },1000);
@@ -230,26 +239,39 @@ state.set_pre_match=function()
     overlay.progressCounter.set_match("league",3,36);
 }
 
+/* Runs the 30s pre match sequence */
 state.run_pre_match=function()
 {
-    state.set_pre_match();
-    overlay.matchCounter.startMatchCounter(34);
-    setTimeout(function() {
-        console.log("30s to match");
-        state.match_start_minus_30();
-    },5000); //run 30s script
+    console.log("30s to match");
+    state.match_start_minus_30();
     setTimeout(function() {
         console.log("10s to match")
         state.match_start_minus_10();
-    },25000); //run 10s script
+    },1000*(20)); //run 10s script
     setTimeout(function() {
         console.log("match start")
         state.match_start();
-    },35000); //run start script
+    },1000*(30)); //run start script
+}
+
+state.run_post_match=function()
+{
+    console.log("match end")
+    state.match_end();
     setTimeout(function() {
-        console.log("match end")
-        state.match_end();
-    },135000);
+        console.log("match end+10")
+        state.match_end_plus_10();
+    },1000*(10)); //run 10s script
+}
+
+state.run_matches=function()
+{
+    state.set_pre_match();
+    overlay.matchCounter.startMatchCounter(120+59);
+    setInterval(function() {
+        setTimeout(state.run_pre_match,1000*30);
+        setTimeout(state.run_post_match,1000*120);
+    },(1000*2*60))
 }
 
 state.match_start_minus_30=function()
@@ -285,6 +307,49 @@ state.match_end_plus_10=function()
 
 
 
+</script>
+<script>
+
+    updateMatch = function(match)
+    {
+        console.log(match)
+        start= new Date(match.times.game.start)
+        end= new Date(match.times.game.end)
+
+
+        now = new Date();
+        diff = start-now;
+        minutesToNext = diff/(60*1000);
+
+        /* counter setup 
+        Before comp use mode pre
+        For long intervals use mode interval
+        for standard match gaps use gap
+        for in matches use match */
+
+        if (minutesToNext>10)
+        {
+            /* when a long gap exists */
+            overlay.matchCounter.set_mode("interval");
+            minuites = start.getMinutes() < 10 ? "0" + start.getMinutes() : start.getMinutes();
+            $("#match-counter .timer .clock").text(start.getHours() + ":" + start.getMinutes());
+        }
+        else
+        {
+            overlay.matchCounter.set_mode("gap");
+
+            secondsToMatch = diff/1000;
+            let minutes = parseInt(secondsToMatch / 60, 10);
+            let seconds = parseInt(secondsToMatch % 60, 10);
+            
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            $("#match-counter .timer .clock").text(minutes + ":" + seconds);
+        }
+        
+        
+    }
+    
 </script>
 
 </body>

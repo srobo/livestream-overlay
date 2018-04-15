@@ -158,13 +158,52 @@ p {
     font-size: 60px;
     margin-left: 230px;
     width: 300px;
-    transition: width 1.5s ease-in-out;
+    transition: width 1.5s ease-in-out, margin 1.5s ease-in-out;
     /* width: auto; */
     position: relative;
 }
 
+/* pre fade for expanding and colapsing the text */
+#match-counter::after{
+    content: "";
+    display: block;
+    background: #2a2a2a;
+    background: linear-gradient(to right,#2a2a2a 20px,#00000000 30px) !important;
+    height: 100%;
+    width: 30px;
+    transform: skew(-20deg);
+    border-radius: 5px;
+    position: absolute;
+    top: 0;
+}
+
+#match-counter.only {
+    margin-top: 60px;
+}
+
 #match-counter.clock-only {
     width: 150px;
+}
+
+#match-counter .timer {
+    overflow: hidden;
+    margin-left:10px;
+}
+
+.timer h2{
+    width: max-content;
+    float: right;
+}
+
+span.clock {
+    width:70px;
+    float: right;
+    margin-right: 40px;
+}
+
+span.clock-info {
+    float:right;
+    margin-left: 40px;
 }
 
 #zones {
@@ -227,6 +266,10 @@ p {
     transition-duration: 1.5s;
 }
 
+#overlay-side .sbox-med {
+    margin-left:10px;
+}
+
 #overlay-side-scores .row {
     width:150px;
 }
@@ -247,6 +290,7 @@ p {
     height:120px;
     width:300px;
     margin-bottom:10px;
+    margin-left:20px;
 }
 
 #overlay-side-upnext .name {
