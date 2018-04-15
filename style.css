@@ -105,6 +105,12 @@ p {
     height: 30px;
     margin: 10px auto;
     position: relative;
+    transition: ease-out 1.5s;
+}
+
+#overlay-top-content.hidden {
+    margin-top: -50px;
+    transition: ease-in 1.5s;
 }
 
 #overlay-top-content p span{
