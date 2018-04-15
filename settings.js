@@ -5,6 +5,6 @@
 
 */
 
-var streamServerURI = "http://srcomp.sourcebots.org:5001";
+var streamServerURI = "http://srcomp.sourcebots.org:5001/";
 var apiURI = "http://srcomp.sourcebots.org/comp-api/";
 var debug = true;
