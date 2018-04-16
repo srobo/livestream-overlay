@@ -83,7 +83,15 @@ comp.location = function(name,callback){
   return comp._api('locations',callback,name);
 }
 
-// TODO: comp.matches
+// Get information about matches
+comp.matches = function(callback){
+  return comp._api('matches', callback);
+}
+
+//last_scored contains the highest match number which has a score assigned, but may be null if no scores have yet been entered.
+comp.matchesLastScored = function(callback){
+  return comp._api('matches/last_scores', callback);
+}
 
 // Get a list of match periods.
 comp.periods = function(callback){
