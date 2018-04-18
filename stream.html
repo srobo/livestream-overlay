@@ -28,32 +28,32 @@
 <!-- Bottom ticker and zones -->
 <div id="overlay-bottom">
 	<div id="overlay-content">
-	<div id="sourcebots-logo">
-		<img src="SourceBots.png">
-	</div>
-	<div id="match-counter" class="sbox-med flair">
-		<div class="content timer"><h2>
-            <span class="clock">2:34</span>
-            <span class="clock-info">Next Match: </span>
-        </h2></div>
-	</div>
-	<div id="zones">
-		<ul>
-			<li class="sbox-small purple">
-				<div class="content"><p>BBC: British Broadcasting corp</p></div>
-			</li>
-			<li class="sbox-small green">
-				<div class="content"><p>NSA: National Security Agency</p></div>
-			</li>
-			<li class="sbox-small yellow">
-				<div class="content"><p>BOB: Box of Boxes</p></div>
-			</li>
-			<li class="sbox-small orange">
-				<div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
-			</li>
-		</ul>
-	</div>
-	</div>	
+        <div id="sourcebots-logo">
+            <img src="SourceBots.png">
+        </div>
+        <div id="match-counter" class="sbox-med flair">
+		    <div class="content timer"><h2>
+                <span class="clock">2:34</span>
+                <span class="clock-info">Next Match: </span>
+            </h2></div>
+        </div>
+        <div id="zones">
+        <ul>
+            <li class="sbox-small zone_0 purple">
+                <div class="content"><p>BBC: British Broadcasting corp</p></div>
+            </li>
+            <li class="sbox-small zone_1 green">
+                <div class="content"><p>NSA: National Security Agency</p></div>
+            </li>
+            <li class="sbox-small zone_2 yellow">
+                <div class="content"><p>BOB: Box of Boxes</p></div>
+            </li>
+            <li class="sbox-small zone_3 orange">
+                <div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
+            </li>
+        </ul>
+    </div>
+    </div>	
 </div>
 
 
@@ -92,30 +92,48 @@
 		</div>
 	</div>
 	<div id="overlay-side-upnext" class="hidden">
-		<div class="sbox-med flair">
-			<div class="content"><h2>Up Next</h2></div>
-                </div>
-		<div class="team-next sbox purple">
-    			<div class="img"><img src="walle.png"></div>
-        		<div class="name"><h2 style="">BBC</h2></div>
-		</div>
-		<div class="team-next sbox green">
-    			<div class="img"><img src="t101.jpg"></div>
-        		<div class="name"><h2 style="">NSA</h2></div>
-		</div>
-		<div class="team-next sbox yellow">
-    			<div class="img"><img src="getty.jpg"></div>
-        		<div class="name"><h2 style="">BOB</h2></div>
-		</div>
-                <div class="team-next sbox orange">
-                        <div class="img"><img src="irobot.jpg"></div>
-                        <div class="name"><h2 style="">RPF</h2></div>
-                </div>
-
-
-	</div>
+        <div class="sbox-med flair">
+            <div class="content"><h2>Up Next</h2></div>
+        </div>
+        <div class="team-next sbox zone_0 purple">
+            <div class="img"><img src="walle.png"></div>
+            <div class="name"><h2 style="">BBC</h2></div>
+        </div>
+        <div class="team-next sbox zone_1 green">
+            <div class="img"><img src="t101.jpg"></div>
+            <div class="name"><h2 style="">NSA</h2></div>
+        </div>
+        <div class="team-next sbox zone_2 yellow">
+            <div class="img"><img src="getty.jpg"></div>
+            <div class="name"><h2 style="">BOB</h2></div>
+        </div>
+        <div class="team-next sbox zone_3 orange">
+            <div class="img"><img src="irobot.jpg"></div>
+            <div class="name"><h2 style="">RPF</h2></div>
+        </div>
+    </div>
 </div>
 
+<script>
+
+teams={}
+
+teams['BBC']= {
+      "image_url": "walle.png",
+      "league_pos": 35,
+      "location": {
+        "get": "/comp-api/locations/a-group",
+        "name": "a-group"
+      },
+      "name": "British Broadcasting Corp, and some more stuff to test overflows",
+      "scores": {
+        "game": 69,
+        "league": 69
+      },
+      "tla": "BBC"
+    };
+
+</script>
 <script>
 
 /* overlay objects, used to control the overlay display*/
@@ -133,17 +151,19 @@ overlay.progressCounter={
         $("#overlay-top-content").addClass("hidden");
     },
 
-    set_match: function(type,matchNumber,matchesTotal)
+    matchesTotal:36,
+
+    set_match: function(match)
     {
-        if(type=="league")
+        if(match.type=="league")
         {
             var prefix = "<span class=\"match-type\">League:</span>"
-            var counter = `<span class="match-id">${matchNumber}/${matchesTotal}</span>`
+            var counter = `<span class="match-id">${match.num}/${this.matchesTotal}</span>`
             $("#overlay-top-content .content").html(`<p>${prefix}${counter}</p>`);
         }
         else
         {
-            $("#overlay-top-content .content").html(`<p>${type} ${matchNumber}</p>`);
+            $("#overlay-top-content .content").html(`<p>${match.display_name.replace(/ \(.*\)/g,'')}</p>`);
         }
     },
 }
@@ -158,6 +178,34 @@ overlay.scores={
     hide: function()
     {
         $("#overlay-side-scores").addClass("hidden");
+    },
+
+    updateScores: function(teams)
+    {
+	teamlist=[]
+	for (key in teams)
+	{
+		teamlist[teamlist.length] = teams[key];
+	}
+        function comparescore(a,b) {
+            if (a.scores.league < b.scores.league)
+                return 1;
+            if (a.scores.league > b.scores.league)
+                return -1;
+            return 0;
+        }
+
+	teamlist.sort(comparescore)
+	
+	scoreout=$("#overlay-side-scores .table");
+	for (i = 0; i<scoreout.find(".row").length; i++)
+	{
+		let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
+		let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
+		
+		span1.html(teamlist[i].tla);
+		span2.html(teamlist[i].scores.league);
+	}
     }
 }
 
@@ -171,6 +219,25 @@ overlay.next={
     hide: function()
     {
         $("#overlay-side-upnext").addClass("hidden");
+    },
+
+    setTeams: function(match)
+    {
+        teamTLAs=match.teams;
+        
+        for (cornerID in teamTLAs)
+        {
+            let TLA = teamTLAs[cornerID]
+            let teamName = teams[TLA].name
+            let teamImg;
+            if ("image_url" in teams[TLA])
+                teamImg = imgURI+teams[TLA].image_url
+            else
+                teamImg = ""
+            let teamImage = teams[TLA]
+            $(".team-next.zone_"+cornerID+" h2").text(TLA);
+            $(".team-next.zone_"+cornerID+" img").attr("src",teamImg);
+        }
     }
 }
 
@@ -186,6 +253,20 @@ overlay.zones = {
     {
         $("#zones").addClass("hidden");
         $("#match-counter").addClass("only");
+    },
+
+    //sets the team display for a given match
+    setTeams: function(match)
+    {
+        teamTLAs=match.teams;
+        
+        for (cornerID in teamTLAs)
+        {
+            //console.log(team)
+            let TLA = teamTLAs[cornerID]
+            let teamName = teams[TLA].name
+            $("#zones .zone_"+cornerID+" p").text(TLA+": "+teamName);
+        } 
     }
 }
 
@@ -232,9 +313,9 @@ overlay.matchCounter={
         for in matches use match */
 
 
-        if (start>now)
+        if (start<now)
         {
-            if(end>now)
+            if(end<now)
             {
                 console.log("recieved past match")
             }
@@ -340,7 +421,7 @@ state.set_pre_match=function()
     overlay.matchCounter.set_mode("gap");
     overlay.zones.hide();
     overlay.progressCounter.show();
-    overlay.progressCounter.set_match("league",3,36);
+    overlay.progressCounter.set_match({num:0,type:"knockout",display_name:"Final (#129)"},36);
 }
 
 /* Runs the 30s pre match sequence */
@@ -378,11 +459,11 @@ state.run_matches=function()
     },(1000*2*60))
 }
 
-state.match_start_minus_30=function()
+state.match_start_minus_30=function(match)
 {
     overlay.scores.hide();
     overlay.next.show();
-    overlay.progressCounter.set_match("league",4,36);
+    overlay.progressCounter.set_match(match,36);
 }
 
 state.match_start_minus_10=function()
@@ -409,21 +490,93 @@ state.match_end_plus_10=function()
     overlay.scores.show();
 }
 
+state.currentMatch;
+state.mode=null;
+
+state.runTick=function()
+{
+    currentMatch=this.currentMatch;
+
+    if (new Date(currentMatch.times.game.start).getTime()< Date.now())
+    {
+        //match has started;
+        if(this.mode!="match")
+        {
+            state.match_start();
+            this.mode="match";
+        }
+    }
+    else
+    {
+        timeToStart=(new Date(currentMatch.times.game.start).getTime() - Date.now())/1000;
+        
+        if (timeToStart<10)
+        {
+            if(this.mode!="pre_10s")
+            {
+                state.match_start_minus_10();
+                this.mode="pre_10s";
+            }
+        }
+        else if (timeToStart<30)
+        {
+            if(this.mode!="pre_30s")
+            {
+                state.match_start_minus_30(currentMatch);
+                this.mode="pre_30s";
+            }
+        }
+        else
+        {
+            if(this.mode!="gap")
+            {
+                state.match_end();
+                state.match_end_plus_10();
+                this.mode="gap";
+            }
+        }
+    }
+}
+
+setInterval(state.runTick.bind(state),100);
 setInterval(overlay.matchCounter.runTick.bind(overlay.matchCounter),100)
 
 
 </script>
 <script>
 
+
 onTeamUpdate = function(team)
 {
-	//console.log(team);
+    //when a team update is recieved cache the team details for use
+    teams[team.tla]=team;
+    //overlay.scores.updateScores(teams);
 }
 
 onMatchUpdate = function(match)
 {
-	console.log(match);
+    if (match.length==0)
+        return;
+    overlay.next.setTeams(match)
+    overlay.zones.setTeams(match)
+    overlay.matchCounter.setNextMatch(match);
+    state.currentMatch=match;
+    console.log(match);
 }
+
+
+
+setTimeout(function() {
+    fakematch={
+        num:3,
+        teams:['BBC','BAY','WYC','BAY'],
+        times:{
+            game:{start:new Date(Date.now()+(60*1000)),end:new Date(Date.now()+(2*60*1000))},
+        },
+        type: "league",
+    }
+    onMatchUpdate(fakematch)	
+},500);
 
 
     
