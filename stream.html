@@ -9,6 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="moment.js"></script>
     <script src="settings.js"></script>
+
+    <script src="comp.js"></script>
     <script src="events.js"></script>
 
 </head>
@@ -59,7 +61,7 @@
 
 <!-- Side bar scores -->
 <div id="overlay-side">
-	<div id="overlay-side-scores">
+	<div id="overlay-side-scores" class="hidden">
 		<div class="sbox-med flair">
 			<div class="content"><h2>League scores</h2></div>
 		</div>
@@ -116,6 +118,8 @@
 
 <script>
 
+cache={};
+
 teams={}
 
 teams['BBC']= {
@@ -158,7 +162,7 @@ overlay.progressCounter={
         if(match.type=="league")
         {
             var prefix = "<span class=\"match-type\">League:</span>"
-            var counter = `<span class="match-id">${match.num}/${this.matchesTotal}</span>`
+            var counter = `<span class="match-id">${match.num+1}/${this.matchesTotal}</span>`
             $("#overlay-top-content .content").html(`<p>${prefix}${counter}</p>`);
         }
         else
@@ -228,15 +232,23 @@ overlay.next={
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
-            let teamName = teams[TLA].name
-            let teamImg;
-            if ("image_url" in teams[TLA])
-                teamImg = imgURI+teams[TLA].image_url
+            if(TLA==null)
+            {
+                $(".team-next.zone_"+cornerID+" h2").text("-EMPTY-");
+                $(".team-next.zone_"+cornerID+" img").attr("src","");
+            }
             else
-                teamImg = ""
-            let teamImage = teams[TLA]
-            $(".team-next.zone_"+cornerID+" h2").text(TLA);
-            $(".team-next.zone_"+cornerID+" img").attr("src",teamImg);
+            {
+                let teamName = teams[TLA].name
+                let teamImg;
+                if ("image_url" in teams[TLA])
+                    teamImg = imgURI+teams[TLA].image_url
+                else
+                    teamImg = ""
+                let teamImage = teams[TLA]
+                $(".team-next.zone_"+cornerID+" h2").text(TLA);
+                $(".team-next.zone_"+cornerID+" img").attr("src",teamImg);
+            }
         }
     }
 }
@@ -264,8 +276,15 @@ overlay.zones = {
         {
             //console.log(team)
             let TLA = teamTLAs[cornerID]
-            let teamName = teams[TLA].name
-            $("#zones .zone_"+cornerID+" p").text(TLA+": "+teamName);
+            if(TLA==null)
+            {
+                $("#zones .zone_"+cornerID+" p").text("-EMPTY-");
+            }
+            else
+            {
+                let teamName = teams[TLA].name
+                $("#zones .zone_"+cornerID+" p").text(TLA+": "+teamName);
+            }
         } 
     }
 }
@@ -321,6 +340,8 @@ overlay.matchCounter={
             }
             this.set_mode("match");
             this.target=parseInt(end.getTime());
+            this.runTick();
+            return;
         }
 
         diff = start-now;
@@ -332,18 +353,21 @@ overlay.matchCounter={
             {
                 this.set_mode("pre")
                 this.target=parseInt(start.getTime());
+                this.runTick();
             }
             else
             {
                 /* when a long gap exists */
                 this.set_mode("interval");
                 this.target=parseInt(start.getTime());
+                this.runTick();
             }
         }
         else
         {
             this.set_mode("gap");
             this.target=parseInt(start.getTime());
+            this.runTick();
         }
     },
         
@@ -461,49 +485,79 @@ state.run_matches=function()
 
 state.match_start_minus_30=function(match)
 {
+ 
     overlay.scores.hide();
     overlay.next.show();
-    overlay.progressCounter.set_match(match,36);
+    overlay.next.setTeams(match)
+    overlay.zones.hide();
+    overlay.matchCounter.setNextMatch(match)
+    overlay.progressCounter.show();
+    overlay.progressCounter.set_match(match);
 }
 
-state.match_start_minus_10=function()
+state.match_start_minus_10=function(match)
 {
+    overlay.scores.hide();
     overlay.next.hide();
     overlay.zones.show();
+    overlay.zones.setTeams(match)
+    overlay.matchCounter.setNextMatch(match)
+    overlay.progressCounter.show();
+    overlay.progressCounter.set_match(match);
 }
 
-state.match_start=function()
+state.match_start=function(match)
 {
-    overlay.matchCounter.set_mode("match");
-    overlay.matchCounter.startMatchCounter((1*60)-1);
+    overlay.scores.hide();
+    overlay.next.hide();
+    overlay.zones.show();
+    overlay.zones.setTeams(match)
+    overlay.matchCounter.setNextMatch(match)
+    overlay.progressCounter.show();
+    overlay.progressCounter.set_match(match);
 }
 
-state.match_end=function()
+state.match_end=function(match)
 {
-    overlay.matchCounter.set_mode("gap");
-    overlay.matchCounter.startMatchCounter((1*60)-1);
+    overlay.scores.hide();
+    overlay.next.hide();
     overlay.zones.hide();
+    overlay.progressCounter.show();
+    overlay.matchCounter.setNextMatch(match)
 }
 
-state.match_end_plus_10=function()
+state.match_end_plus_10=function(match)
 {
-    overlay.scores.show();
+    if (match.num>0)
+    {
+        overlay.scores.show();
+    }
+    overlay.scores.updateScores(teams)
 }
 
-state.currentMatch;
+state.currentMatch=null;
 state.mode=null;
 
 state.runTick=function()
 {
-    currentMatch=this.currentMatch;
+    let currentMatch=this.currentMatch;
+    if (currentMatch==null)
+    {
+        return;
+    }
 
     if (new Date(currentMatch.times.game.start).getTime()< Date.now())
     {
         //match has started;
         if(this.mode!="match")
         {
-            state.match_start();
+            state.match_start(currentMatch);
             this.mode="match";
+        }
+        if (new Date(currentMatch.times.game.end).getTime()< (Date.now()-(5*1000)))
+        {
+            //get the next match
+            state.currentMatch=getNextMatch();
         }
     }
     else
@@ -514,7 +568,7 @@ state.runTick=function()
         {
             if(this.mode!="pre_10s")
             {
-                state.match_start_minus_10();
+                state.match_start_minus_10(currentMatch);
                 this.mode="pre_10s";
             }
         }
@@ -530,8 +584,8 @@ state.runTick=function()
         {
             if(this.mode!="gap")
             {
-                state.match_end();
-                state.match_end_plus_10();
+                state.match_end(currentMatch);
+                state.match_end_plus_10(currentMatch);
                 this.mode="gap";
             }
         }
@@ -550,16 +604,18 @@ onTeamUpdate = function(team)
 {
     //when a team update is recieved cache the team details for use
     teams[team.tla]=team;
-    //overlay.scores.updateScores(teams);
+    if (teams.length>=8) overlay.scores.updateScores(teams);
 }
 
 onMatchUpdate = function(match)
 {
+    console.log(match)
+    //extrack the match for the required arena
     if (match.length==0)
         return;
-    overlay.next.setTeams(match)
-    overlay.zones.setTeams(match)
-    overlay.matchCounter.setNextMatch(match);
+    match=match[0]
+    if (match.length==0)
+        return;
     state.currentMatch=match;
     console.log(match);
 }
@@ -567,17 +623,57 @@ onMatchUpdate = function(match)
 
 
 setTimeout(function() {
-    fakematch={
+    fakematch=[{
+        arena:"A",
         num:3,
         teams:['BBC','BAY','WYC','BAY'],
         times:{
             game:{start:new Date(Date.now()+(60*1000)),end:new Date(Date.now()+(2*60*1000))},
         },
         type: "league",
-    }
-    onMatchUpdate(fakematch)	
+    }]
+    //onMatchUpdate(fakematch)	
 },500);
 
+getNextMatch = function()
+{
+    let now=Date.now();
+    
+    for (matchID in cache.matches.matches)
+    {
+        let match = cache.matches.matches[matchID];
+        if(match.arena!="A") continue;
+        if(new Date(match.times.game.end).getTime()<now) continue;
+        
+        return match;
+    }
+    return null;
+}
+
+
+recievedMatches = function(matches)
+{
+    //store the matches in the cache
+    cache["matches"]=matches;
+
+    //update total number of matches
+    let totalLeagues = 0;
+    for (matchID in matches.matches)
+    {
+        let match = matches.matches[matchID];
+        if(match.arena=="A" && match.type=="league")
+        {
+            totalLeagues+=1;
+        }
+    }
+    overlay.progressCounter.matchesTotal=totalLeagues;
+    console.log("Total League matches:",totalLeagues)
+
+     state.currentMatch=getNextMatch();
+}
+
+//on start
+comp.matches(recievedMatches);  //get the match table
 
     
 </script>
