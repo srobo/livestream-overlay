@@ -19,7 +19,7 @@
 
 <!-- Top match info -->
 <div id="overlay-top">
-	<div id="overlay-top-content" class="sbox-small flair" onclick="state.run_matches()">
+	<div id="overlay-top-content" class="sbox-small flair hidden">
 		<div class="content">
 			<p><span class="match-type">League:</span><span class="match-id">20/36</span></p>
 		</div>
@@ -33,13 +33,13 @@
         <div id="sourcebots-logo">
             <img src="SourceBots.png">
         </div>
-        <div id="match-counter" class="sbox-med flair">
+        <div id="match-counter" class="sbox-med flair only">
 		    <div class="content timer"><h2>
                 <span class="clock">2:34</span>
                 <span class="clock-info">Next Match: </span>
             </h2></div>
         </div>
-        <div id="zones">
+        <div id="zones" class="hidden">
         <ul>
             <li class="sbox-small zone_0 purple">
                 <div class="content"><p>BBC: British Broadcasting corp</p></div>
@@ -290,6 +290,11 @@ overlay.zones = {
 }
 
 overlay.matchCounter={
+
+    hide: function()
+    {
+        $("#match-counter").width(0);
+    },
 
     set_mode: function(mode)
     {
