@@ -233,7 +233,7 @@ overlay.next={
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
-            if(TLA==null)
+            if(TLA==null || TLA=="???")
             {
                 $(".team-next.zone_"+cornerID+" h2").text("-EMPTY-");
                 $(".team-next.zone_"+cornerID+" img").attr("src","");
@@ -277,7 +277,7 @@ overlay.zones = {
         {
             //console.log(team)
             let TLA = teamTLAs[cornerID]
-            if(TLA==null)
+            if(TLA==null || TLA=="???")
             {
                 $("#zones .zone_"+cornerID+" p").text("-EMPTY-");
             }
@@ -373,10 +373,11 @@ overlay.matchCounter={
         {
             this.target=parseInt(start.getTime());
             this.runTick(true);
+	    console.log($('#match-counter').html())
             setTimeout(function() {
                 this.set_mode("gap");
                 this.runTick(true);
-            }.bind(this),1)
+            }.bind(this),10)
         }
     },
         
@@ -543,6 +544,11 @@ state.match_end_plus_10=function(match)
     }
     overlay.scores.updateScores(teams)
     overlay.next.setTeams(match)
+    timeToStart=(new Date(match.times.game.start).getTime() - Date.now())/1000;
+    if(timeToStart>(5*60))
+    {
+        overlay.progressCounter.hide();
+    }
 }
 
 state.currentMatch=null;
@@ -551,8 +557,12 @@ state.mode=null;
 state.runTick=function()
 {
     let currentMatch=this.currentMatch;
-    if (currentMatch==null)
+    if (currentMatch==null || currentMatch==[])
     {
+        overlay.matchCounter.hide();
+        overlay.zones.hide();
+        overlay.scores.hide();
+        overlay.progressCounter.hide();
         return;
     }
 
