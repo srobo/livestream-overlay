@@ -121,8 +121,9 @@
 cache={};
 
 teams={}
+faketeams={}
 
-teams['BBC']= {
+faketeams['BBC']= {
       "image_url": "walle.png",
       "league_pos": 35,
       "location": {
@@ -155,7 +156,7 @@ overlay.progressCounter={
         $("#overlay-top-content").addClass("hidden");
     },
 
-    matchesTotal:36,
+    matchesTotal:0,
 
     set_match: function(match)
     {
@@ -343,9 +344,9 @@ overlay.matchCounter={
             {
                 console.log("recieved past match")
             }
-            this.set_mode("match");
             this.target=parseInt(end.getTime());
-            this.runTick();
+            this.runTick(true);
+            setTimeout(function() {this.set_mode("match")}.bind(this),1)
             return;
         }
 
@@ -356,23 +357,26 @@ overlay.matchCounter={
         {
             if(match.num==0)
             {
-                this.set_mode("pre")
                 this.target=parseInt(start.getTime());
-                this.runTick();
+                this.runTick(true);
+                setTimeout(function() {this.set_mode("pre")}.bind(this),1)
             }
             else
             {
                 /* when a long gap exists */
-                this.set_mode("interval");
                 this.target=parseInt(start.getTime());
-                this.runTick();
+                this.runTick(true);
+                setTimeout(function() {this.set_mode("interval")}.bind(this),1)
             }
         }
         else
         {
-            this.set_mode("gap");
             this.target=parseInt(start.getTime());
-            this.runTick();
+            this.runTick(true);
+            setTimeout(function() {
+                this.set_mode("gap");
+                this.runTick(true);
+            }.bind(this),1)
         }
     },
         
@@ -387,10 +391,10 @@ overlay.matchCounter={
     target:0,
 
     /* clock tick function called every 1/10th of a second */
-    runTick: function()
+    runTick: function(force)
     {
         let timeNow = parseInt(Date.now()/1000,10);
-        if (this.lastupdated >= timeNow)
+        if (this.lastupdated >= timeNow || force==true)
         {
             return;
         }
@@ -492,31 +496,31 @@ state.match_start_minus_30=function(match)
 {
  
     overlay.scores.hide();
-    overlay.next.show();
     overlay.next.setTeams(match)
+    setTimeout(overlay.next.show,1);
     overlay.zones.hide();
     overlay.matchCounter.setNextMatch(match)
-    overlay.progressCounter.show();
     overlay.progressCounter.set_match(match);
+    overlay.progressCounter.show();
 }
 
 state.match_start_minus_10=function(match)
 {
     overlay.scores.hide();
     overlay.next.hide();
-    overlay.zones.show();
     overlay.zones.setTeams(match)
+    overlay.zones.show();
     overlay.matchCounter.setNextMatch(match)
-    overlay.progressCounter.show();
     overlay.progressCounter.set_match(match);
+    overlay.progressCounter.show();
 }
 
 state.match_start=function(match)
 {
     overlay.scores.hide();
     overlay.next.hide();
-    overlay.zones.show();
     overlay.zones.setTeams(match)
+    overlay.zones.show();
     overlay.matchCounter.setNextMatch(match)
     overlay.progressCounter.show();
     overlay.progressCounter.set_match(match);
@@ -538,6 +542,7 @@ state.match_end_plus_10=function(match)
         overlay.scores.show();
     }
     overlay.scores.updateScores(teams)
+    overlay.next.setTeams(match)
 }
 
 state.currentMatch=null;
@@ -608,6 +613,7 @@ setInterval(overlay.matchCounter.runTick.bind(overlay.matchCounter),100)
 onTeamUpdate = function(team)
 {
     //when a team update is recieved cache the team details for use
+    console.log("updated teams")
     teams[team.tla]=team;
     if (teams.length>=8) overlay.scores.updateScores(teams);
 }
@@ -647,7 +653,7 @@ getNextMatch = function()
     for (matchID in cache.matches.matches)
     {
         let match = cache.matches.matches[matchID];
-        if(match.arena!="A") continue;
+        if(match.arena!="main") continue;
         if(new Date(match.times.game.end).getTime()<now) continue;
         
         return match;
@@ -666,7 +672,7 @@ recievedMatches = function(matches)
     for (matchID in matches.matches)
     {
         let match = matches.matches[matchID];
-        if(match.arena=="A" && match.type=="league")
+        if(match.arena=="main" && match.type=="league")
         {
             totalLeagues+=1;
         }
@@ -674,7 +680,8 @@ recievedMatches = function(matches)
     overlay.progressCounter.matchesTotal=totalLeagues;
     console.log("Total League matches:",totalLeagues)
 
-     state.currentMatch=getNextMatch();
+    state.currentMatch=getNextMatch();
+    overlay.progressCounter.set_match(state.currentMatch);
 }
 
 //on start
