@@ -2,17 +2,11 @@ body {
     padding: 0px;
     margin: 0px;
     background: limegreen;
-    /* background: url(ls-example.png); */
-    /* background-size: cover; */
 }
 
 /* font and text */
 @font-face {
     font-family: 'Haettenschweiler';
-    src:url('Haettenschweiler.ttf.woff') format('woff'),
-        url('Haettenschweiler.ttf.svg#Haettenschweiler') format('svg'),
-        url('Haettenschweiler.ttf.eot'),
-        url('Haettenschweiler.ttf.eot?#iefix') format('embedded-opentype'); 
     font-weight: normal;
     font-style: normal;
 }

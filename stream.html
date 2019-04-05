@@ -6,13 +6,14 @@
     <title>Live stream Overlay</title>
 
     <link rel="stylesheet" href="style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="moment.js"></script>
+    <script src="node_modules/moment/min/moment.min.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="settings.js"></script>
 
     <script src="comp.js"></script>
     <script src="events.js"></script>
 
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
 </head>
 
 <body>
@@ -98,19 +99,19 @@
             <div class="content"><h2>Up Next</h2></div>
         </div>
         <div class="team-next sbox zone_0 purple">
-            <div class="img"><img src="walle.png"></div>
+            <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">BBC</h2></div>
         </div>
         <div class="team-next sbox zone_1 green">
-            <div class="img"><img src="t101.jpg"></div>
+            <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">NSA</h2></div>
         </div>
         <div class="team-next sbox zone_2 yellow">
-            <div class="img"><img src="getty.jpg"></div>
+            <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">BOB</h2></div>
         </div>
         <div class="team-next sbox zone_3 orange">
-            <div class="img"><img src="irobot.jpg"></div>
+            <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">RPF</h2></div>
         </div>
     </div>
@@ -123,23 +124,20 @@ cache={};
 teams={}
 faketeams={}
 
-faketeams['BBC']= {
-      "image_url": "walle.png",
-      "league_pos": 35,
-      "location": {
-        "get": "/comp-api/locations/a-group",
-        "name": "a-group"
-      },
-      "name": "British Broadcasting Corp, and some more stuff to test overflows",
-      "scores": {
-        "game": 69,
-        "league": 69
-      },
-      "tla": "BBC"
-    };
-
-</script>
-<script>
+// faketeams['BBC']= {
+//     "image_url": "walle.png",
+//     "league_pos": 35,
+//     "location": {
+//     "get": "/comp-api/locations/a-group",
+//     "name": "a-group"
+//     },
+//     "name": "British Broadcasting Corp, and some more stuff to test overflows",
+//     "scores": {
+//     "game": 69,
+//     "league": 69
+//     },
+//     "tla": "BBC"
+// };
 
 /* overlay objects, used to control the overlay display*/
 overlay={}
@@ -275,7 +273,6 @@ overlay.zones = {
         
         for (cornerID in teamTLAs)
         {
-            //console.log(team)
             let TLA = teamTLAs[cornerID]
             if(TLA==null || TLA=="???")
             {
@@ -383,8 +380,7 @@ overlay.matchCounter={
         
     startMatchCounter: function(time)
     {
-        this.target=parseInt(Date.now()+(time*1000),10);
-        console.log(this.target)
+        this.target = parseInt(Date.now()+(time*1000),10);
     },
 
     fixedClock: false,
@@ -400,12 +396,9 @@ overlay.matchCounter={
             return;
         }
         this.lastupdated = timeNow;
-        //console.log("tick");
 
         if (this.fixedClock)
         {
-            //console.log(Date.now()+(5*60*1000));
-            //console.log(this.target)
             if (this.target<(Date.now()+(5*60*1000)))
             {
                 console.log("switching to gap mode");
@@ -622,7 +615,7 @@ setInterval(overlay.matchCounter.runTick.bind(overlay.matchCounter),100)
 
 onTeamUpdate = function(team)
 {
-    //when a team update is recieved cache the team details for use
+    //when a team update is received cache the team details for use
     console.log("updated teams")
     teams[team.tla]=team;
     if (teams.length>=8) overlay.scores.updateScores(teams);
@@ -630,15 +623,13 @@ onTeamUpdate = function(team)
 
 onMatchUpdate = function(match)
 {
-    console.log(match)
-    //extrack the match for the required arena
+    //extract the match for the required arena
     if (match.length==0)
         return;
     match=match[0]
     if (match.length==0)
         return;
     state.currentMatch=match;
-    console.log(match);
 }
 
 
@@ -653,7 +644,6 @@ setTimeout(function() {
         },
         type: "league",
     }]
-    //onMatchUpdate(fakematch)	
 },500);
 
 getNextMatch = function()
