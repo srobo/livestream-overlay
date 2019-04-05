@@ -1,15 +1,18 @@
 //colors
 $background: #00ff00;
+
 $white: white;
 $dark: #2a2a2a;
+
+$brand: #3270ed;
 
 $zone_0: #ff00ff;
 $zone_1: limegreen;
 $zone_2: #ffff00;
 $zone_3: #ff6600;
 
-//fonts
-$font: sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+$font: 'Open Sans', sans-serif;
 
 sbox_before {
 	content: "";
@@ -87,7 +90,7 @@ p {
 	@extend sbox_before;
 }
 .purple::before {
-	background: linear-gradient(to right,$zone_0,$dark 50px) !important;
+	background: linear-gradient(to right,$brand,$dark 50px) !important;
 }
 .green::before {
 	background: linear-gradient(to right,$background,$dark 50px) !important;
@@ -99,7 +102,7 @@ p {
 	background: linear-gradient(to right,$zone_3,$dark 50px) !important;
 }
 .flair::before {
-	background: linear-gradient(to left,purple,$dark 50px) !important;
+	background: linear-gradient(to left,$brand,$dark 50px) !important;
 }
 #overlay-top {
 	width: 100%;
@@ -146,7 +149,7 @@ p {
 	padding: 0 10px;
 	float: left;
 	img {
-		width: 200px;
+		width: 120px;
 		height: auto;
 		margin: auto;
 		position: absolute;

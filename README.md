@@ -4,6 +4,8 @@ A HTML and JavaScript overlay for the livestream of the competition.
 
 ## Usage
 
+Install dependencies: `npm install`
+
 Build: `npm run build`
 
 Copy `settings.example.js` to `settings.js`
