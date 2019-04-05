@@ -1,0 +1,326 @@
+//colors
+$background: #00ff00;
+$white: white;
+$dark: #2a2a2a;
+
+$zone_0: #ff00ff;
+$zone_1: limegreen;
+$zone_2: #ffff00;
+$zone_3: #ff6600;
+
+//fonts
+$font: sans-serif;
+
+sbox_before {
+	content: "";
+	display: block;
+	background: $dark;
+	height: 100%;
+	width: 100%;
+	transform: skew(-20deg);
+	border-radius: 5px;
+	position: relative;
+}
+
+sbox_content {
+	margin: auto;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	position: absolute;
+	text-align: center;
+}
+
+
+body {
+	padding: 0;
+	margin: 0;
+	background: $zone_1;
+}
+@font-face {
+	font-family: $font;
+	font-weight: normal;
+	font-style: normal;
+}
+h2 {
+	color: $white;
+	font-family: $font;
+	font-size: 40px;
+	font-weight: normal;
+	margin: 0;
+	line-height: 60px;
+	vertical-align: middle;
+}
+p {
+	color: $white;
+	font-family: $font;
+	font-size: 20px;
+	margin: 0;
+	line-height: 30px;
+	vertical-align: middle;
+}
+.sbox-med {
+	position: relative;
+	margin-bottom: 10px;
+	height: 60px;
+	.content {
+		@extend sbox_content;
+	}
+}
+.sbox-small {
+	position: relative;
+	margin-bottom: 10px;
+	height: 30px;
+	.content {
+		@extend sbox_content;
+	}
+}
+.sbox::before {
+	@extend sbox_before;
+}
+.sbox-small::before {
+	@extend sbox_before;
+}
+.sbox-med::before {
+	@extend sbox_before;
+}
+.purple::before {
+	background: linear-gradient(to right,$zone_0,$dark 50px) !important;
+}
+.green::before {
+	background: linear-gradient(to right,$background,$dark 50px) !important;
+}
+.yellow::before {
+	background: linear-gradient(to right,$zone_2,$dark 50px) !important;
+}
+.orange::before {
+	background: linear-gradient(to right,$zone_3,$dark 50px) !important;
+}
+.flair::before {
+	background: linear-gradient(to left,purple,$dark 50px) !important;
+}
+#overlay-top {
+	width: 100%;
+	position: fixed;
+}
+#overlay-top-content {
+	width: 150px;
+	height: 30px;
+	margin: 10px auto;
+	position: relative;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: ease-out 1.5s;
+	&.hidden {
+		margin-top: -50px;
+		//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+		transition: ease-in 1.5s;
+	}
+	p span {
+		vertical-align: middle;
+		text-transform: uppercase;
+		line-height: 30px;
+		&.match-id {
+			font-size: 25px;
+			padding-left: 5px;
+		}
+	}
+}
+#overlay-bottom {
+	position: absolute;
+	bottom: 0;
+	height: auto;
+	width: 100%;
+}
+#overlay-content {
+	margin-right: 200px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+	height: 150px;
+	overflow: hidden;
+}
+#sourcebots-logo {
+	width: 200px;
+	height: 100%;
+	padding: 0 10px;
+	float: left;
+	img {
+		width: 200px;
+		height: auto;
+		margin: auto;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+	}
+}
+#match-counter {
+	font-size: 60px;
+	margin-left: 230px;
+	width: 300px;
+	transition: width 0.9s ease-in-out, margin 1.5s ease-in-out;
+	position: relative;
+	&.only {
+		margin-top: 60px;
+	}
+	&.clock-only {
+		width: 150px;
+	}
+	.timer {
+		overflow: hidden;
+		margin-left: 10px;
+	}
+}
+#match-counter::after {
+	content: "";
+	display: block;
+	background: $dark;
+	background: linear-gradient(to right,#2a2a2a 20px,#00000000 30px) !important;
+	height: 100%;
+	max-width: 30px;
+	width: 100%;
+	transform: skew(-20deg);
+	border-radius: 5px;
+	position: absolute;
+	top: 0;
+}
+span {
+	&.clock {
+		width: 70px;
+		float: right;
+		margin-right: 40px;
+	}
+	&.clock-info {
+		float: right;
+		margin-left: 40px;
+	}
+}
+#zones {
+	font-size: 24px;
+	width: 100%;
+	transition: ease-out;
+	transition-duration: 1.5s;
+	&.hidden {
+		transition: ease-in;
+		transition-duration: 1.5s;
+		margin-top: 100px;
+	}
+	ul {
+		padding-left: 0;
+		width: 100%;
+		position: relative;
+		li {
+			list-style: none;
+			display: inline-block;
+			text-align: left;
+			width: 19%;
+			position: relative;
+			margin: 0 10px;
+			p {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			div {
+				padding-left: 10px;
+				padding-right: 10px;
+			}
+		}
+	}
+}
+#overlay-side {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 300px;
+	padding-bottom: 270px;
+	padding: 10px;
+	> div {
+		border-radius: 50px;
+		min-height: 200px;
+		transition: ease-out;
+		transition-duration: 1.5s;
+		width: 300px;
+		position: absolute;
+	}
+	.hidden {
+		margin-left: -500px;
+		transition: ease-out;
+		transition-duration: 1.5s;
+	}
+	.sbox-med {
+		margin-left: 10px;
+	}
+}
+#overlay-side-scores {
+	.row {
+		width: 150px;
+	}
+	.score {
+		padding-left: 30px;
+	}
+	.position {
+		padding-right: 30px;
+	}
+	.score::after {
+		content: "pts";
+	}
+}
+#overlay-side-upnext {
+	.team-next {
+		position: relative;
+		height: 120px;
+		width: 300px;
+		margin-bottom: 10px;
+		margin-left: 20px;
+		.img {
+			height: 120px;
+			width: 300px;
+			transform: skew(-20deg);
+			border-radius: 5px;
+			position: absolute;
+			top: 0;
+			overflow: hidden;
+			opacity: 0.5;
+			img {
+				width: 240px;
+				height: 120px;
+				float: right;
+				transform: skew(20deg);
+				margin-right: -21px;
+				object-fit: cover;
+			}
+			&:after {
+				content: "";
+				position: absolute;
+				display: block;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				border-collapse: separate;
+				background: linear-gradient(to right,#2a2a2a 100px,#2a2a2a00 150px);
+				background: linear-gradient(to right,#00000000 50px, #2a2a2a 51px, #2a2a2a 100px,#2a2a2a00 150px);
+			}
+		}
+	}
+	.name {
+		margin: auto;
+		width: 300px;
+		height: 50px;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		position: absolute;
+		text-align: center;
+	}
+}
+.sbox .content {
+	@extend sbox_content;
+}
+.timer h2 {
+	width: max-content;
+	float: right;
+}

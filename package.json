@@ -5,11 +5,12 @@
   "main": " ",
   "dependencies": {
     "jquery": "^3.3.1",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "node-sass": "^4.11.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": " "
+    "build": "node-sass style.scss style.css"
   },
   "repository": {
     "type": "git",
