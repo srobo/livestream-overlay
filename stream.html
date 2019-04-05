@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="UTF-8"/>
-    <title>Live stream Overlay</title>
+    <title>srcomp-livestream-overlay</title>
 
     <link rel="stylesheet" href="style.css">
     <script src="node_modules/moment/min/moment.min.js"></script>
@@ -22,7 +22,7 @@
 <div id="overlay-top">
 	<div id="overlay-top-content" class="sbox-small flair hidden">
 		<div class="content">
-			<p><span class="match-type">League:</span><span class="match-id">20/36</span></p>
+			<p><span class="match-type">League:</span><span class="match-id">??/??</span></p>
 		</div>
 	</div>
 </div>
@@ -36,7 +36,7 @@
         </div>
         <div id="match-counter" class="sbox-med flair only">
 		    <div class="content timer"><h2>
-                <span class="clock">2:34</span>
+                <span class="clock">?:?</span>
                 <span class="clock-info">Next Match: </span>
             </h2></div>
         </div>
@@ -339,7 +339,7 @@ overlay.matchCounter={
         {
             if(end<now)
             {
-                console.log("recieved past match")
+                console.log("received past match")
             }
             this.target=parseInt(end.getTime());
             this.runTick(true);
@@ -370,7 +370,6 @@ overlay.matchCounter={
         {
             this.target=parseInt(start.getTime());
             this.runTick(true);
-	    console.log($('#match-counter').html())
             setTimeout(function() {
                 this.set_mode("gap");
                 this.runTick(true);
