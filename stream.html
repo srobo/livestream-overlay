@@ -22,7 +22,7 @@
 <div id="overlay-top">
 	<div id="overlay-top-content" class="sbox-small flair hidden">
 		<div class="content">
-			<p><span class="match-type">League:</span><span class="match-id">??/??</span></p>
+            <p><span class="match-id">Match 4</span> <span class="match-type">(league)</span></p>
 		</div>
 	</div>
 </div>
@@ -165,9 +165,9 @@ overlay.progressCounter={
     {
         if(match.type=="league")
         {
-            var prefix = "<span class=\"match-type\">League:</span>"
-            var counter = `<span class="match-id">${match.num+1}/${this.matchesTotal}</span>`
-            $("#overlay-top-content .content").html(`<p>${prefix}${counter}</p>`);
+            $("#overlay-top-content .content").html(
+                `<p><span class="match-id">${match.display_name}</span> <span class="match-type">(league)</span></p>`
+            );
         }
         else
         {
