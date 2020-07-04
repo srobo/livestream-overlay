@@ -41,21 +41,21 @@
             </h2></div>
         </div>
         <div id="zones" class="hidden">
-        <ul>
-            <li class="sbox-small zone_0 purple">
-                <div class="content"><p>BBC: British Broadcasting corp</p></div>
-            </li>
-            <li class="sbox-small zone_1 green">
-                <div class="content"><p>NSA: National Security Agency</p></div>
-            </li>
-            <li class="sbox-small zone_2 yellow">
-                <div class="content"><p>BOB: Box of Boxes</p></div>
-            </li>
-            <li class="sbox-small zone_3 orange">
-                <div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
-            </li>
-        </ul>
-    </div>
+            <ul>
+                <li class="sbox-small zone_0 purple">
+                    <div class="content"><p>BBC: British Broadcasting corp</p></div>
+                </li>
+                <li class="sbox-small zone_1 green">
+                    <div class="content"><p>NSA: National Security Agency</p></div>
+                </li>
+                <li class="sbox-small zone_2 yellow">
+                    <div class="content"><p>BOB: Box of Boxes</p></div>
+                </li>
+                <li class="sbox-small zone_3 orange">
+                    <div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -190,11 +190,11 @@ overlay.scores={
 
     updateScores: function(teams)
     {
-	teamlist=[]
-	for (key in teams)
-	{
-		teamlist[teamlist.length] = teams[key];
-	}
+        teamlist=[]
+        for (key in teams)
+        {
+            teamlist[teamlist.length] = teams[key];
+        }
         function comparescore(a,b) {
             if (a.scores.league < b.scores.league)
                 return 1;
@@ -203,17 +203,17 @@ overlay.scores={
             return 0;
         }
 
-	teamlist.sort(comparescore)
+        teamlist.sort(comparescore)
 
-	scoreout=$("#overlay-side-scores .table");
-	for (i = 0; i<scoreout.find(".row").length; i++)
-	{
-		let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
-		let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
+        scoreout=$("#overlay-side-scores .table");
+        for (i = 0; i<scoreout.find(".row").length; i++)
+        {
+            let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
+            let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
 
-		span1.html(teamlist[i].tla);
-		span2.html(teamlist[i].scores.league);
-	}
+            span1.html(teamlist[i].tla);
+            span2.html(teamlist[i].scores.league);
+        }
     }
 }
 
