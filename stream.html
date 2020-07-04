@@ -13,60 +13,60 @@
     <script src="comp.js"></script>
     <script src="events.js"></script>
 
-    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 </head>
 
 <body>
 
 <!-- Top match info -->
 <div id="overlay-top">
-	<div id="overlay-top-content" class="sbox-small flair hidden">
-		<div class="content">
-			<p><span class="match-type">League:</span><span class="match-id">??/??</span></p>
-		</div>
-	</div>
+    <div id="overlay-top-content" class="sbox-small flair hidden">
+        <div class="content">
+            <p><span class="match-type">League:</span><span class="match-id">??/??</span></p>
+        </div>
+    </div>
 </div>
 
 
 <!-- Bottom ticker and zones -->
 <div id="overlay-bottom">
-	<div id="overlay-content">
+    <div id="overlay-content">
         <div id="sourcebots-logo">
             <img src="logo.png">
         </div>
         <div id="match-counter" class="sbox-med flair only">
-		    <div class="content timer"><h2>
+            <div class="content timer"><h2>
                 <span class="clock">?:?</span>
                 <span class="clock-info">Next Match: </span>
             </h2></div>
         </div>
         <div id="zones" class="hidden">
-        <ul>
-            <li class="sbox-small zone_0 purple">
-                <div class="content"><p>BBC: British Broadcasting corp</p></div>
-            </li>
-            <li class="sbox-small zone_1 green">
-                <div class="content"><p>NSA: National Security Agency</p></div>
-            </li>
-            <li class="sbox-small zone_2 yellow">
-                <div class="content"><p>BOB: Box of Boxes</p></div>
-            </li>
-            <li class="sbox-small zone_3 orange">
-                <div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
-            </li>
-        </ul>
+            <ul>
+                <li class="sbox-small zone_0 purple">
+                    <div class="content"><p>BBC: British Broadcasting corp</p></div>
+                </li>
+                <li class="sbox-small zone_1 green">
+                    <div class="content"><p>NSA: National Security Agency</p></div>
+                </li>
+                <li class="sbox-small zone_2 yellow">
+                    <div class="content"><p>BOB: Box of Boxes</p></div>
+                </li>
+                <li class="sbox-small zone_3 orange">
+                    <div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
+                </li>
+            </ul>
+        </div>
     </div>
-    </div>	
 </div>
 
 
 <!-- Side bar scores -->
 <div id="overlay-side">
-	<div id="overlay-side-scores" class="hidden">
-		<div class="sbox-med flair">
-			<div class="content"><h2>League scores</h2></div>
-		</div>
-		<div class="table">
+    <div id="overlay-side-scores" class="hidden">
+        <div class="sbox-med flair">
+            <div class="content"><h2>League scores</h2></div>
+        </div>
+        <div class="table">
             <div class="row sbox-small">
                 <div class="content"><p><span class="position">1</span><span>BBC</span><span class="score">4</span></p></div>
             </div>
@@ -98,8 +98,8 @@
                 <div class="content"><p><span class="position">10</span><span>BBC</span><span class="score">4</span></p></div>
             </div>
         </div>
-	</div>
-	<div id="overlay-side-upnext" class="hidden">
+    </div>
+    <div id="overlay-side-upnext" class="hidden">
         <div class="sbox-med flair">
             <div class="content"><h2>Up Next</h2></div>
         </div>
@@ -190,11 +190,11 @@ overlay.scores={
 
     updateScores: function(teams)
     {
-	teamlist=[]
-	for (key in teams)
-	{
-		teamlist[teamlist.length] = teams[key];
-	}
+        teamlist=[]
+        for (key in teams)
+        {
+            teamlist[teamlist.length] = teams[key];
+        }
         function comparescore(a,b) {
             if (a.scores.league < b.scores.league)
                 return 1;
@@ -203,17 +203,17 @@ overlay.scores={
             return 0;
         }
 
-	teamlist.sort(comparescore)
-	
-	scoreout=$("#overlay-side-scores .table");
-	for (i = 0; i<scoreout.find(".row").length; i++)
-	{
-		let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
-		let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
-		
-		span1.html(teamlist[i].tla);
-		span2.html(teamlist[i].scores.league);
-	}
+        teamlist.sort(comparescore)
+
+        scoreout=$("#overlay-side-scores .table");
+        for (i = 0; i<scoreout.find(".row").length; i++)
+        {
+            let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
+            let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
+
+            span1.html(teamlist[i].tla);
+            span2.html(teamlist[i].scores.league);
+        }
     }
 }
 
@@ -232,7 +232,7 @@ overlay.next={
     setTeams: function(match)
     {
         teamTLAs=match.teams;
-        
+
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
@@ -275,7 +275,7 @@ overlay.zones = {
     setTeams: function(match)
     {
         teamTLAs=match.teams;
-        
+
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
@@ -288,7 +288,7 @@ overlay.zones = {
                 let teamName = teams[TLA].name
                 $("#zones .zone_"+cornerID+" p").text(TLA+": "+teamName);
             }
-        } 
+        }
     }
 }
 
@@ -322,7 +322,7 @@ overlay.matchCounter={
                 $("#match-counter .clock-info").html("Matches resume at:")
                 this.fixedClock=true;
                 break;
-    
+
         }
         $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
     },
@@ -333,7 +333,7 @@ overlay.matchCounter={
 
         now = new Date();
 
-        /* counter mode 
+        /* counter mode
         Before comp use mode pre
         For long intervals use mode interval
         for standard match gaps use gap
@@ -381,7 +381,7 @@ overlay.matchCounter={
             }.bind(this),10)
         }
     },
-        
+
     startMatchCounter: function(time)
     {
         this.target = parseInt(Date.now()+(time*1000),10);
@@ -415,7 +415,7 @@ overlay.matchCounter={
             let startTime=new Date(this.target);
             hours = startTime.getHours();
             minutes = startTime.getMinutes();
-            
+
             hours = hours < 10 ? "0" + hours : hours;
             minutes = minutes < 10 ? "0" + minutes : minutes;
 
@@ -492,7 +492,7 @@ state.run_matches=function()
 
 state.match_start_minus_30=function(match)
 {
- 
+
     overlay.scores.hide();
     overlay.next.setTeams(match)
     setTimeout(overlay.next.show,1);
@@ -580,7 +580,7 @@ state.runTick=function()
     else
     {
         timeToStart=(new Date(currentMatch.times.game.start).getTime() - Date.now())/1000;
-        
+
         if (timeToStart<10)
         {
             if(this.mode!="pre_10s")
@@ -653,13 +653,13 @@ setTimeout(function() {
 getNextMatch = function()
 {
     let now=Date.now();
-    
+
     for (matchID in cache.matches.matches)
     {
         let match = cache.matches.matches[matchID];
         if(match.arena!="main") continue;
         if(new Date(match.times.game.end).getTime()<now) continue;
-        
+
         return match;
     }
     return null;
@@ -691,7 +691,7 @@ recievedMatches = function(matches)
 //on start
 comp.matches(recievedMatches);  //get the match table
 
-    
+
 </script>
 
 </body>
