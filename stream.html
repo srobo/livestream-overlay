@@ -13,7 +13,7 @@
     <script src="comp.js"></script>
     <script src="events.js"></script>
 
-    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
 </head>
 
 <body>
@@ -56,7 +56,7 @@
             </li>
         </ul>
     </div>
-    </div>	
+    </div>
 </div>
 
 
@@ -204,13 +204,13 @@ overlay.scores={
         }
 
 	teamlist.sort(comparescore)
-	
+
 	scoreout=$("#overlay-side-scores .table");
 	for (i = 0; i<scoreout.find(".row").length; i++)
 	{
 		let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
 		let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
-		
+
 		span1.html(teamlist[i].tla);
 		span2.html(teamlist[i].scores.league);
 	}
@@ -232,7 +232,7 @@ overlay.next={
     setTeams: function(match)
     {
         teamTLAs=match.teams;
-        
+
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
@@ -275,7 +275,7 @@ overlay.zones = {
     setTeams: function(match)
     {
         teamTLAs=match.teams;
-        
+
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
@@ -288,7 +288,7 @@ overlay.zones = {
                 let teamName = teams[TLA].name
                 $("#zones .zone_"+cornerID+" p").text(TLA+": "+teamName);
             }
-        } 
+        }
     }
 }
 
@@ -322,7 +322,7 @@ overlay.matchCounter={
                 $("#match-counter .clock-info").html("Matches resume at:")
                 this.fixedClock=true;
                 break;
-    
+
         }
         $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
     },
@@ -333,7 +333,7 @@ overlay.matchCounter={
 
         now = new Date();
 
-        /* counter mode 
+        /* counter mode
         Before comp use mode pre
         For long intervals use mode interval
         for standard match gaps use gap
@@ -381,7 +381,7 @@ overlay.matchCounter={
             }.bind(this),10)
         }
     },
-        
+
     startMatchCounter: function(time)
     {
         this.target = parseInt(Date.now()+(time*1000),10);
@@ -415,7 +415,7 @@ overlay.matchCounter={
             let startTime=new Date(this.target);
             hours = startTime.getHours();
             minutes = startTime.getMinutes();
-            
+
             hours = hours < 10 ? "0" + hours : hours;
             minutes = minutes < 10 ? "0" + minutes : minutes;
 
@@ -492,7 +492,7 @@ state.run_matches=function()
 
 state.match_start_minus_30=function(match)
 {
- 
+
     overlay.scores.hide();
     overlay.next.setTeams(match)
     setTimeout(overlay.next.show,1);
@@ -580,7 +580,7 @@ state.runTick=function()
     else
     {
         timeToStart=(new Date(currentMatch.times.game.start).getTime() - Date.now())/1000;
-        
+
         if (timeToStart<10)
         {
             if(this.mode!="pre_10s")
@@ -653,13 +653,13 @@ setTimeout(function() {
 getNextMatch = function()
 {
     let now=Date.now();
-    
+
     for (matchID in cache.matches.matches)
     {
         let match = cache.matches.matches[matchID];
         if(match.arena!="main") continue;
         if(new Date(match.times.game.end).getTime()<now) continue;
-        
+
         return match;
     }
     return null;
@@ -691,7 +691,7 @@ recievedMatches = function(matches)
 //on start
 comp.matches(recievedMatches);  //get the match table
 
-    
+
 </script>
 
 </body>
