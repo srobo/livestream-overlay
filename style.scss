@@ -90,10 +90,10 @@ p {
 	@extend sbox_before;
 }
 .purple::before {
-	background: linear-gradient(to right,$brand,$dark 50px) !important;
+	background: linear-gradient(to right,$zone_0,$dark 50px) !important;
 }
 .green::before {
-	background: linear-gradient(to right,$background,$dark 50px) !important;
+	background: linear-gradient(to right,$zone_1,$dark 50px) !important;
 }
 .yellow::before {
 	background: linear-gradient(to right,$zone_2,$dark 50px) !important;
