@@ -8,10 +8,10 @@
     "moment": "^2.27.0"
   },
   "devDependencies": {
-    "node-sass": "^5.0.0"
+    "sass": "^1.32.5"
   },
   "scripts": {
-    "build": "node-sass style.scss style.css"
+    "build": "sass style.scss style.css"
   },
   "repository": {
     "type": "git",
