@@ -2,14 +2,9 @@
 $background: #00ff00;
 
 $white: white;
-$dark: #2a2a2a;
+$dark: #2a2a2a;  // Updating this? Also update the linear-gradient target in the #corners-css template.
 
 $brand: #3270ed;
-
-$zone_0: #00ff00;
-$zone_1: #ff6600;
-$zone_2: #ff00ff;
-$zone_3: #ffff00;
 
 $chroma_key: #ff6600;
 
@@ -91,19 +86,8 @@ p {
 .sbox-med::before {
 	@extend sbox_before;
 }
-.purple::before {
-	background: linear-gradient(to right,$zone_0,$dark 50px) !important;
-}
-.green::before {
-	background: linear-gradient(to right,$zone_1,$dark 50px) !important;
-}
-.yellow::before {
-	background: linear-gradient(to right,$zone_2,$dark 50px) !important;
-}
-.orange::before {
-	background: linear-gradient(to right,$zone_3,$dark 50px) !important;
-}
 .flair::before {
+	// Updating this? Also update the similar corner flairs defined in the #corners-css template.
 	background: linear-gradient(to left,$brand,$dark 50px) !important;
 }
 #overlay-top {

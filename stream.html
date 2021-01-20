@@ -17,6 +17,13 @@
 </head>
 
 <body>
+<template id="corners-css">
+    .{ZONE_CLASS}::before {
+        /* Updating this? Also update $dark and/or .flair::before in style.css */
+        background: linear-gradient(to right, {ZONE_COLOUR}, #2a2a2a 50px) !important;
+    }
+</template>
+
 
 <!-- Top match info -->
 <div id="overlay-top">
@@ -42,16 +49,16 @@
         </div>
         <div id="zones" class="hidden">
             <ul>
-                <li class="sbox-small zone_0 purple">
+                <li class="sbox-small zone_0">
                     <div class="content"><p>BBC: British Broadcasting corp</p></div>
                 </li>
-                <li class="sbox-small zone_1 green">
+                <li class="sbox-small zone_1">
                     <div class="content"><p>NSA: National Security Agency</p></div>
                 </li>
-                <li class="sbox-small zone_2 yellow">
+                <li class="sbox-small zone_2">
                     <div class="content"><p>BOB: Box of Boxes</p></div>
                 </li>
-                <li class="sbox-small zone_3 orange">
+                <li class="sbox-small zone_3">
                     <div class="content"><p>RPF: Raspbery Pi Foundation</p></div>
                 </li>
             </ul>
@@ -103,19 +110,19 @@
         <div class="sbox-med flair">
             <div class="content"><h2>Up Next</h2></div>
         </div>
-        <div class="team-next sbox zone_0 purple">
+        <div class="team-next sbox zone_0">
             <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">BBC</h2></div>
         </div>
-        <div class="team-next sbox zone_1 green">
+        <div class="team-next sbox zone_1">
             <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">NSA</h2></div>
         </div>
-        <div class="team-next sbox zone_2 yellow">
+        <div class="team-next sbox zone_2">
             <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">BOB</h2></div>
         </div>
-        <div class="team-next sbox zone_3 orange">
+        <div class="team-next sbox zone_3">
             <div class="img"><img src="#"></div>
             <div class="name"><h2 style="">RPF</h2></div>
         </div>
@@ -123,6 +130,17 @@
 </div>
 
 <script>
+
+// Yes this is pretty terrible, but it's better than nothing.
+function buildTemplate(templateQuerySelector, replacements)
+{
+    let content = document.querySelector(templateQuerySelector).innerHTML;
+    for (var name in replacements)
+    {
+        content = content.replace('{' + name + '}', replacements[name]);
+    }
+    return content;
+}
 
 cache={};
 
@@ -666,6 +684,22 @@ getNextMatch = function()
 }
 
 
+recievedCorners = function(data)
+{
+    let content = '';
+    for (var cornerID in data.corners)
+    {
+        content += buildTemplate('#corners-css', {
+            ZONE_CLASS: 'zone_' + cornerID,
+            ZONE_COLOUR: data.corners[cornerID].colour,
+        });
+    }
+    const styleNode = document.createElement('style');
+    styleNode.type = 'text/css';
+    styleNode.innerHTML = content;
+    document.head.appendChild(styleNode);
+}
+
 recievedMatches = function(matches)
 {
     //store the matches in the cache
@@ -688,7 +722,9 @@ recievedMatches = function(matches)
     overlay.progressCounter.set_match(state.currentMatch);
 }
 
+
 //on start
+comp.corners(recievedCorners);  //get the corner colours
 comp.matches(recievedMatches);  //get the match table
 
 
