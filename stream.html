@@ -48,6 +48,11 @@
             </h2></div>
         </div>
         <div id="zones" class="hidden">
+            <template class="zone-template">
+                <li class="sbox-small {ZONE_CLASS}">
+                    <div class="content"><p>{TEAM_NAME}</p></div>
+                </li>
+            </template>
             <ul>
                 <li class="sbox-small zone_0">
                     <div class="content"><p>BBC: British Broadcasting corp</p></div>
@@ -110,21 +115,29 @@
         <div class="sbox-med flair">
             <div class="content"><h2>Up Next</h2></div>
         </div>
-        <div class="team-next sbox zone_0">
-            <div class="img"><img src="#"></div>
-            <div class="name"><h2 style="">BBC</h2></div>
-        </div>
-        <div class="team-next sbox zone_1">
-            <div class="img"><img src="#"></div>
-            <div class="name"><h2 style="">NSA</h2></div>
-        </div>
-        <div class="team-next sbox zone_2">
-            <div class="img"><img src="#"></div>
-            <div class="name"><h2 style="">BOB</h2></div>
-        </div>
-        <div class="team-next sbox zone_3">
-            <div class="img"><img src="#"></div>
-            <div class="name"><h2 style="">RPF</h2></div>
+        <template class="zone-template">
+            <div class="team-next sbox {ZONE_CLASS}">
+                <div class="img"><img src="{IMG_SRC}"></div>
+                <div class="name"><h2>{TLA}</h2></div>
+            </div>
+        </template>
+        <div class="teams-next">
+            <div class="team-next sbox zone_0">
+                <div class="img"><img src="#"></div>
+                <div class="name"><h2 style="">BBC</h2></div>
+            </div>
+            <div class="team-next sbox zone_1">
+                <div class="img"><img src="#"></div>
+                <div class="name"><h2 style="">NSA</h2></div>
+            </div>
+            <div class="team-next sbox zone_2">
+                <div class="img"><img src="#"></div>
+                <div class="name"><h2 style="">BOB</h2></div>
+            </div>
+            <div class="team-next sbox zone_3">
+                <div class="img"><img src="#"></div>
+                <div class="name"><h2 style="">RPF</h2></div>
+            </div>
         </div>
     </div>
 </div>
@@ -250,15 +263,26 @@ overlay.next={
 
     setTeams: function(match)
     {
+        function buildZone(zone_id, tla, img_src)
+        {
+            return buildTemplate('#overlay-side-upnext .zone-template', {
+                ZONE_CLASS: 'zone_' + zone_id,
+                TLA: tla,
+                IMG_SRC: img_src,
+            });
+        }
+
         teamTLAs=match.teams;
+
+        let content = '';
+        const zonesNextContainer = document.querySelector('#overlay-side-upnext .teams-next');
 
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
             if(TLA==null || TLA=="???")
             {
-                $(".team-next.zone_"+cornerID+" h2").text("-EMPTY-");
-                $(".team-next.zone_"+cornerID+" img").attr("src","");
+                content += buildZone(cornerID, "-EMPTY-", "");
             }
             else
             {
@@ -268,10 +292,10 @@ overlay.next={
                     teamImg = imgURI+teams[TLA].image_url
                 else
                     teamImg = ""
-                $(".team-next.zone_"+cornerID+" h2").text(TLA);
-                $(".team-next.zone_"+cornerID+" img").attr("src",teamImg);
+                content += buildZone(cornerID, TLA, teamImg);
             }
         }
+        zonesNextContainer.innerHTML = content;
     }
 }
 
@@ -292,21 +316,33 @@ overlay.zones = {
     //sets the team display for a given match
     setTeams: function(match)
     {
+        function buildZone(zone_id, team_name)
+        {
+            return buildTemplate('#zones .zone-template', {
+                ZONE_CLASS: 'zone_' + zone_id,
+                TEAM_NAME: team_name,
+            });
+        }
+
         teamTLAs=match.teams;
+
+        let content = '';
+        const zonesContainer = document.querySelector('#zones ul');
 
         for (cornerID in teamTLAs)
         {
             let TLA = teamTLAs[cornerID]
             if(TLA==null || TLA=="???")
             {
-                $("#zones .zone_"+cornerID+" p").text("-EMPTY-");
+                content += buildZone(cornerID, "-EMPTY-");
             }
             else
             {
                 let teamName = teams[TLA].name
-                $("#zones .zone_"+cornerID+" p").text(TLA+": "+teamName);
+                content += buildZone(cornerID, TLA+": "+teamName);
             }
         }
+        zonesContainer.innerHTML = content;
     }
 }
 
