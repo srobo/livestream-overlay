@@ -163,7 +163,12 @@ overlay.progressCounter={
 
     set_match: function(match)
     {
-        if(match.type=="league")
+        if(!match)
+        {
+            console.log("No current match");
+            $("#overlay-top-content .content").html('');
+        }
+        else if(match.type=="league")
         {
             $("#overlay-top-content .content").html(
                 `<p><span class="match-id">${match.display_name}</span> <span class="match-type">(league)</span></p>`
