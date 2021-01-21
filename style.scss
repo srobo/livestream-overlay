@@ -11,6 +11,8 @@ $zone_1: #ff6600;
 $zone_2: #ff00ff;
 $zone_3: #ffff00;
 
+$chroma_key: #ff6600;
+
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 $font: 'Open Sans', sans-serif;
 
@@ -40,7 +42,7 @@ sbox_content {
 body {
 	padding: 0;
 	margin: 0;
-	background: $zone_1;
+	background: $chroma_key;
 }
 @font-face {
 	font-family: $font;
