@@ -347,7 +347,6 @@ overlay.zones = {
 }
 
 overlay.matchCounter={
-
     hide: function()
     {
         $("#match-counter").width(0);
@@ -356,27 +355,38 @@ overlay.matchCounter={
     set_mode: function(mode)
     {
         switch(mode) {
+            // Before a match has started
             case "pre":
+                $("#match-counter").show();
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Matches begin at:");
                 this.fixedClock=true;
                 break;
+            // A short time period between matches
             case "gap":
+                $("#match-counter").show();
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Next Match:")
                 this.fixedClock=false;
                 break;
+            // During a match
             case "match":
+                $("#match-counter").show();
                 $("#match-counter").addClass("clock-only");
                 $("#match-counter .clock-info").html("")
                 this.fixedClock=false;
                 break;
+            // A break between matches
             case "interval":
+                $("#match-counter").show();
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Matches resume at:")
                 this.fixedClock=true;
                 break;
-
+            // The end of the current event
+            case "end":
+                $("#match-counter").hide();
+                break;
         }
         $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
     },
@@ -386,13 +396,6 @@ overlay.matchCounter={
         end= new Date(match.times.game.end)
 
         now = new Date();
-
-        /* counter mode
-        Before comp use mode pre
-        For long intervals use mode interval
-        for standard match gaps use gap
-        for in matches use match */
-
 
         if (start<now)
         {
@@ -417,12 +420,18 @@ overlay.matchCounter={
                 this.runTick(true);
                 setTimeout(function() {this.set_mode("pre")}.bind(this),1)
             }
-            else
+            else if (minutesToNext < 2*24*60)
             {
-                /* when a long gap exists */
+                /* when a long gap (but not the end of the event) exists */
                 this.target=parseInt(start.getTime());
                 this.runTick(true);
                 setTimeout(function() {this.set_mode("interval")}.bind(this),1)
+            }
+            else
+            {
+                this.target=parseInt(start.getTime());
+                this.runTick(true);
+                setTimeout(function() {this.set_mode("end")}.bind(this),1)
             }
         }
         else
