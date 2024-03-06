@@ -420,7 +420,7 @@ overlay.matchCounter={
                 this.runTick(true);
                 setTimeout(function() {this.set_mode("pre")}.bind(this),1)
             }
-            else if (minutesToNext < 2*24*60)
+            else if (minutesToNext < 24*60)
             {
                 /* when a long gap (but not the end of the event) exists */
                 this.target=parseInt(start.getTime());
