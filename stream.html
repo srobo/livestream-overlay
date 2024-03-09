@@ -352,43 +352,47 @@ overlay.matchCounter={
         $("#match-counter").width(0);
     },
 
+    show: function()
+    {
+        $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
+    },
+
     set_mode: function(mode)
     {
         switch(mode) {
             // Before a match has started
             case "pre":
-                $("#match-counter").show();
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Matches begin at:");
                 this.fixedClock=true;
+                this.show();
                 break;
             // A short time period between matches
             case "gap":
-                $("#match-counter").show();
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Next Match:")
                 this.fixedClock=false;
+                this.show();
                 break;
             // During a match
             case "match":
-                $("#match-counter").show();
                 $("#match-counter").addClass("clock-only");
                 $("#match-counter .clock-info").html("")
                 this.fixedClock=false;
+                this.show();
                 break;
             // A break between matches
             case "interval":
-                $("#match-counter").show();
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Matches resume at:")
                 this.fixedClock=true;
+                this.show();
                 break;
             // The end of the current event
             case "end":
-                $("#match-counter").hide();
+                this.hide();
                 break;
         }
-        $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
     },
 
     setNextMatch: function(match) {
