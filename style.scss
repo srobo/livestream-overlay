@@ -89,6 +89,21 @@ p {
 	// Updating this? Also update the similar corner flairs defined in the #corners-css template.
 	background: linear-gradient(to left,$brand,$dark 50px) !important;
 }
+#arena-unset-warning {
+	color: black;
+	background-color: white;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100;
+	display: none;
+
+	code {
+		background-color: lightgrey;
+	}
+}
 #overlay-top {
 	width: 100%;
 	position: fixed;
