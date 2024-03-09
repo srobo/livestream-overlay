@@ -393,6 +393,8 @@ overlay.matchCounter={
     },
 
     setNextMatch: function(match) {
+        console.debug('setNextMatch', match);
+
         start= new Date(match.times.game.start)
         end= new Date(match.times.game.end)
 
@@ -400,9 +402,10 @@ overlay.matchCounter={
 
         if (start<now)
         {
+            console.debug('setNextMatch: match started')
             if(end<now)
             {
-                console.log("received past match")
+                console.debug('setNextMatch: match ended')
             }
             this.target=parseInt(end.getTime());
             this.runTick(true);
@@ -413,8 +416,10 @@ overlay.matchCounter={
         diff = start-now;
         minutesToNext = diff/(60*1000);
 
+        console.debug('setNextMatch: minutesToNext', minutesToNext);
         if (minutesToNext>10)
         {
+            console.debug('setNextMatch: match.num', match.num);
             if(match.num==0)
             {
                 this.target=parseInt(start.getTime());
@@ -458,9 +463,11 @@ overlay.matchCounter={
     /* clock tick function called every 1/10th of a second */
     runTick: function(force)
     {
+        console.debug('overlay.runTick');
         let timeNow = parseInt(Date.now()/1000,10);
         if (this.lastupdated >= timeNow || force==true)
         {
+            console.debug('overlay.runTick early exit');
             return;
         }
         this.lastupdated = timeNow;
@@ -474,6 +481,7 @@ overlay.matchCounter={
             }
         }
 
+        console.debug('overlay.runTick: this.fixedClock', this.fixedClock);
         if (this.fixedClock)
         {
             let startTime=new Date(this.target);
@@ -505,7 +513,7 @@ state={}
 
 state.match_start_minus_30=function(match)
 {
-
+    console.debug('match_start_minus_30')
     overlay.scores.hide();
     overlay.next.setTeams(match)
     setTimeout(overlay.next.show,1);
@@ -513,10 +521,12 @@ state.match_start_minus_30=function(match)
     overlay.matchCounter.setNextMatch(match)
     overlay.progressCounter.set_match(match);
     overlay.progressCounter.show();
+    console.debug('/match_start_minus_30');
 }
 
 state.match_start_minus_10=function(match)
 {
+    console.debug('match_start_minus_10')
     overlay.scores.hide();
     overlay.next.hide();
     overlay.zones.setTeams(match)
@@ -524,10 +534,12 @@ state.match_start_minus_10=function(match)
     overlay.matchCounter.setNextMatch(match)
     overlay.progressCounter.set_match(match);
     overlay.progressCounter.show();
+    console.debug('/match_start_minus_10');
 }
 
 state.match_start=function(match)
 {
+    console.debug('match_start')
     overlay.scores.hide();
     overlay.next.hide();
     overlay.zones.setTeams(match)
@@ -535,19 +547,23 @@ state.match_start=function(match)
     overlay.matchCounter.setNextMatch(match)
     overlay.progressCounter.show();
     overlay.progressCounter.set_match(match);
+    console.debug('/match_start');
 }
 
 state.match_end=function(match)
 {
+    console.debug('match_end')
     overlay.scores.hide();
     overlay.next.hide();
     overlay.zones.hide();
     overlay.progressCounter.show();
     overlay.matchCounter.setNextMatch(match)
+    console.debug('/match_end');
 }
 
 state.match_end_plus_10=function(match)
 {
+    console.debug('match_end_plus_10')
     if (match.num>0)
     {
         overlay.scores.show();
@@ -559,6 +575,7 @@ state.match_end_plus_10=function(match)
     {
         overlay.progressCounter.hide();
     }
+    console.debug('/match_end_plus_10');
 }
 
 state.currentMatch=null;
@@ -571,9 +588,11 @@ state.setMode=function(mode) {
 
 state.runTick=function()
 {
+    console.debug('state.runTick(), this.mode:', this.mode);
     let currentMatch=this.currentMatch;
     if (currentMatch==null || currentMatch==[])
     {
+        console.debug('state.runTick: no current match, hiding')
         overlay.matchCounter.hide();
         overlay.zones.hide();
         overlay.scores.hide();
@@ -581,8 +600,10 @@ state.runTick=function()
         return;
     }
 
+    console.debug('state.runTick: currentMatch', currentMatch);
     if (new Date(currentMatch.times.game.start).getTime()< Date.now())
     {
+        console.debug('state.runTick: match has started');
         //match has started;
         if(this.mode!="match")
         {
@@ -597,8 +618,10 @@ state.runTick=function()
     }
     else
     {
+        console.debug('state.runTick: match in future');
         timeToStart=(new Date(currentMatch.times.game.start).getTime() - Date.now())/1000;
 
+        console.debug('state.runTick: timeToStart', timeToStart);
         if (timeToStart<10)
         {
             if(this.mode!="pre_10s")
