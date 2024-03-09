@@ -507,57 +507,6 @@ overlay.matchCounter={
 
 state={}
 
-state.set_pre_comp=function()
-{
-    overlay.scores.hide();
-    overlay.matchCounter.set_mode("pre");
-}
-
-state.set_pre_match=function()
-{
-    overlay.scores.show();
-    overlay.next.hide();
-    overlay.matchCounter.set_mode("gap");
-    overlay.zones.hide();
-    overlay.progressCounter.show();
-    overlay.progressCounter.set_match({num:0,type:"knockout",display_name:"Final (#129)"},36);
-}
-
-/* Runs the 30s pre match sequence */
-state.run_pre_match=function()
-{
-    console.log("30s to match");
-    state.match_start_minus_30();
-    setTimeout(function() {
-        console.log("10s to match")
-        state.match_start_minus_10();
-    },1000*(20)); //run 10s script
-    setTimeout(function() {
-        console.log("match start")
-        state.match_start();
-    },1000*(30)); //run start script
-}
-
-state.run_post_match=function()
-{
-    console.log("match end")
-    state.match_end();
-    setTimeout(function() {
-        console.log("match end+10")
-        state.match_end_plus_10();
-    },1000*(10)); //run 10s script
-}
-
-state.run_matches=function()
-{
-    state.set_pre_match();
-    overlay.matchCounter.startMatchCounter(120+59);
-    setInterval(function() {
-        setTimeout(state.run_pre_match,1000*30);
-        setTimeout(state.run_post_match,1000*120);
-    },(1000*2*60))
-}
-
 state.match_start_minus_30=function(match)
 {
 
