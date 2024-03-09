@@ -355,6 +355,7 @@ overlay.matchCounter={
 
     set_mode: function(mode)
     {
+        console.log('Setting matchCounter mode:', mode);
         switch(mode) {
             // Before a match has started
             case "pre":
@@ -563,6 +564,11 @@ state.match_end_plus_10=function(match)
 state.currentMatch=null;
 state.mode=null;
 
+state.setMode=function(mode) {
+    console.log("Setting state mode:", mode);
+    this.mode = mode;
+}
+
 state.runTick=function()
 {
     let currentMatch=this.currentMatch;
@@ -581,7 +587,7 @@ state.runTick=function()
         if(this.mode!="match")
         {
             state.match_start(currentMatch);
-            this.mode="match";
+            this.setMode("match");
         }
         if (new Date(currentMatch.times.game.end).getTime()< (Date.now()-(5*1000)))
         {
@@ -598,7 +604,7 @@ state.runTick=function()
             if(this.mode!="pre_10s")
             {
                 state.match_start_minus_10(currentMatch);
-                this.mode="pre_10s";
+                this.setMode("pre_10s");
             }
         }
         else if (timeToStart<30)
@@ -606,7 +612,7 @@ state.runTick=function()
             if(this.mode!="pre_30s")
             {
                 state.match_start_minus_30(currentMatch);
-                this.mode="pre_30s";
+                this.setMode("pre_30s");
             }
         }
         else
@@ -615,7 +621,7 @@ state.runTick=function()
             {
                 state.match_end(currentMatch);
                 state.match_end_plus_10(currentMatch);
-                this.mode="gap";
+                this.setMode("gap");
             }
         }
     }
