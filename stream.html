@@ -154,8 +154,8 @@
 <script>
 
 const ARENA = new URL(window.location.href).searchParams.get('arena');
-if (!ARENA) {
-    $('#arena-unset-warning').show();
+if (!!ARENA) {
+    $('#arena-unset-warning').hide();
 }
 
 // Yes this is pretty terrible, but it's better than nothing.
