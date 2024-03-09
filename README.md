@@ -15,4 +15,4 @@ Edit the `settings.js` with the appropriate `srcomp` settings.
 Serve the files with any webserver, for example: `python3 -m http.server`, and
 then view the resulting pages in your web browser.
 
-Use chroma-key with your streaming software.
+Use chroma-key with your streaming software. The chroma-key colour is `#ff6600‎`.
