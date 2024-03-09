@@ -204,8 +204,6 @@ overlay.progressCounter={
         $("#overlay-top-content").addClass("hidden");
     },
 
-    matchesTotal:0,
-
     set_match: function(match)
     {
         if(!match)
@@ -703,19 +701,6 @@ recievedMatches = function(matches)
 {
     //store the matches in the cache
     cache["matches"]=matches;
-
-    //update total number of matches
-    let totalLeagues = 0;
-    for (matchID in matches.matches)
-    {
-        let match = matches.matches[matchID];
-        if(match.arena==ARENA && match.type=="league")
-        {
-            totalLeagues+=1;
-        }
-    }
-    overlay.progressCounter.matchesTotal=totalLeagues;
-    console.log("Total League matches:",totalLeagues)
 
     state.currentMatch=getNextMatch();
     overlay.progressCounter.set_match(state.currentMatch);
