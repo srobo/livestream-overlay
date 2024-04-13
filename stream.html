@@ -662,6 +662,10 @@ onMatchUpdate = function(match)
     state.currentMatch=match;
 }
 
+onDelayUpdate = function() {
+    console.log("updated delay, reloading matches");
+    comp.matches(recievedMatches);
+}
 
 
 setTimeout(function() {
