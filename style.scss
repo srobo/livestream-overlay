@@ -256,12 +256,12 @@ span {
 #overlay-side-scores {
 	.row {
 		width: 180px;
-	}
-	.score {
-		padding-left: 30px;
-	}
-	.position {
-		padding-right: 30px;
+
+		.content p {
+			display: flex;
+			justify-content: space-between;
+			padding: 0 .25em;
+		}
 	}
 	.score::after {
 		content: "pts";
