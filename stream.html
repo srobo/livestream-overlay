@@ -87,6 +87,11 @@
         <div class="sbox-med flair">
             <div class="content"><h2>League scores</h2></div>
         </div>
+        <template class="pos-row-template">
+            <div class="row sbox-small">
+                <div class="content"><p><span class="position">{POSITION}</span><span>{TLA}</span><span class="score">{LEAGUE_POINTS}</span></p></div>
+            </div>
+        </template>
         <div class="table">
             <div class="row sbox-small">
                 <div class="content"><p><span class="position">1</span><span>BBC</span><span class="score">4</span></p></div>
@@ -222,26 +227,50 @@ overlay.scores={
 
     updateScores: function(teams)
     {
-        teamlist=[]
-        for (key in teams)
+        const teams_flat = Object.values(teams);
+        const NUM_ROWS = 10;
+
+        function buildPosRow(position, tla, league_points)
         {
-            teamlist[teamlist.length] = teams[key];
-        }
-        function comparescore(a,b) {
-            return a.league_pos - b.league_pos;
+            return buildTemplate('#overlay-side-scores .pos-row-template', {
+                POSITION: position,
+                TLA: tla,
+                LEAGUE_POINTS: league_points,
+            });
         }
 
-        teamlist.sort(comparescore)
-
-        scoreout=$("#overlay-side-scores .table");
-        for (i = 0; i<scoreout.find(".row").length; i++)
-        {
-            let span1=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(2)")
-            let span2=scoreout.find(".row:nth-child("+(i+1)+") span:nth-child(3)")
-
-            span1.html(teamlist[i].tla);
-            span2.html(teamlist[i].scores.league);
+        const teams_by_pos = {};
+        for (const team of teams_flat) {
+            if (!(team.league_pos in teams_by_pos)) {
+                teams_by_pos[team.league_pos] = [];
+            }
+            teams_by_pos[team.league_pos].push(team);
         }
+
+        const positions = Object.keys(teams_by_pos);
+        positions.sort(function(a, b) { return parseInt(a) - parseInt(b) });
+
+        let content = '';
+        let count = 0;
+
+        for (const position of positions) {
+            const teams_this_position = teams_by_pos[position];
+            for (const team of teams_this_position) {
+                content += buildPosRow(
+                    (teams_this_position.length > 1 ? '=' : '') + team.league_pos,
+                    team.tla,
+                    team.scores.league,
+                );
+                count++;
+                if (count >= NUM_ROWS) {
+                    break;
+                }
+            }
+            if (count >= NUM_ROWS) {
+                break;
+            }
+        }
+        document.querySelector("#overlay-side-scores .table").innerHTML = content;
     }
 }
 
