@@ -395,6 +395,7 @@ overlay.matchCounter={
     setNextMatch: function(match) {
         console.debug('setNextMatch', match);
 
+        slot_start = new Date(match.times.slot.start)
         start= new Date(match.times.game.start)
         end= new Date(match.times.game.end)
 
@@ -427,7 +428,7 @@ overlay.matchCounter={
             else if (minutesToNext < 24*60)
             {
                 /* when a long gap (but not the end of the event) exists */
-                this.target=parseInt(start.getTime());
+                this.target=parseInt(slot_start.getTime());
                 setTimeout(function() {this.set_mode("interval")}.bind(this),1)
             }
             else
