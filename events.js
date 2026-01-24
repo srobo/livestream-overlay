@@ -23,8 +23,8 @@ if (!!window.EventSource) {
   }, false);
 
   eventSource.addEventListener('last-scored-match', function(e){
-    if (typeof onlastScoredMatchUpdate == 'function') {
-        onlastScoredMatchUpdate(JSON.parse(e.data));
+    if (typeof onLastScoredMatchUpdate == 'function') {
+        onLastScoredMatchUpdate(JSON.parse(e.data));
     }
   }, false);
 
