@@ -382,6 +382,32 @@ overlay.matchCounter={
         $("#match-counter").width(($(".timer h2")[0].clientWidth)-10);
     },
 
+    _setTimeStr: function(text)
+    {
+        $("#match-counter .timer .clock").text(text);
+    },
+
+    formatHoursMinutes: function(time)
+    {
+        const hours = time.getHours();
+        const minutes = time.getMinutes();
+
+        const hoursStr = hours < 10 ? "0" + hours : hours;
+        const minutesStr = minutes < 10 ? "0" + minutes : minutes;
+
+        return hoursStr + ":" + minutesStr;
+    },
+
+    formatDeltaMinutesSeconds: function(timeDelta)
+    {
+        if (timeDelta<0) timeDelta=0;
+        const minutes = parseInt((timeDelta/1000)/60,10);
+        const seconds = parseInt((timeDelta/1000)%60,10);
+
+        const secondsStr = seconds < 10 ? "0" + seconds : seconds;
+        return minutes + ":" + secondsStr;
+    },
+
     set_mode: function(mode)
     {
         console.log('Setting matchCounter mode:', mode);
@@ -491,23 +517,16 @@ overlay.matchCounter={
         if (this.fixedClock)
         {
             let startTime=new Date(this.target);
-            hours = startTime.getHours();
-            minutes = startTime.getMinutes();
-
-            hours = hours < 10 ? "0" + hours : hours;
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-
-            $("#match-counter .timer .clock").text(hours + ":" + minutes)
+            this._setTimeStr(
+                this.formatHoursMinutes(startTime),
+            );
         }
         else
         {
             let timeDelta=(this.target-Date.now())
-            if (timeDelta<0) timeDelta=0;
-            minutes = parseInt((timeDelta/1000)/60,10);
-            seconds = parseInt((timeDelta/1000)%60,10);
-
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-            $("#match-counter .timer .clock").text(minutes + ":" + seconds);
+            this._setTimeStr(
+                this.formatDeltaMinutesSeconds(timeDelta),
+            );
         }
     }
 }
