@@ -480,20 +480,11 @@ overlay.matchCounter={
     },
 
     fixedClock: false,
-    lastupdated: 0,
     target:0,
 
     /* clock tick function called every 1/10th of a second */
     runTick: function()
     {
-        let timeNow = parseInt(Date.now()/1000,10);
-        if (this.lastupdated >= timeNow)
-        {
-            console.log('overlay.matchCounter.lastupdated is more recent than now!');
-            return;
-        }
-        this.lastupdated = timeNow;
-
         if (this.fixedClock)
         {
             if (this.target<(Date.now()+(5*60*1000)))
