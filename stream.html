@@ -629,6 +629,7 @@ state.match_end=function(match)
     overlay.scores.hide();
     overlay.next.hide();
     overlay.zones.hide();
+    overlay.progressCounter.set_match(match);
     overlay.progressCounter.show();
     overlay.matchCounter.setNextMatch(match)
     console.debug('/match_end');
