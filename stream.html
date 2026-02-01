@@ -757,14 +757,19 @@ onTeamUpdate = function(team)
     if (teams.length>=8) overlay.scores.updateScores(teams);
 }
 
-onMatchUpdate = function(match)
+onMatchUpdate = function(matches)
 {
     //extract the match for the required arena
-    if (match.length==0)
+    var match = matches.find(m => m.arena == ARENA);
+    if (!match) {
+        // no current match -- likely a gap, but can indicate that the schedule
+        // has changed creating a gap where there wasn't one previously. Reload
+        // the schedule so our cache is up to date, but don't override the
+        // current state immediately (for smoothness while we get the new data).
+        console.log("empty matches event, reloading matches");
+        comp.matches(recievedMatches);
         return;
-    match=match[0]
-    if (match.length==0)
-        return;
+    }
     state.setCurrentMatch(match);
 }
 
