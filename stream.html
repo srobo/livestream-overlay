@@ -654,6 +654,22 @@ state.match_end_plus_10=function(match)
 state.currentMatch=null;
 state.mode=null;
 
+state.setCurrentMatch=function(match) {
+    // Prevent recursion -- setMode can update the current match. If it's a
+    // different match, then that's fine, however if it's the same match again
+    // then we're potentially infinitely recursing. We shouldn't error though --
+    // other cases of re-setting the same match are legitimate.
+    if (match == this.currentMatch) {
+        console.log("Current match already set:", match);
+        return;
+    }
+    console.log("Setting current match:", match);
+    this.currentMatch = match;
+    // Refresh the current mode with the new match information.
+    this.setMode("new_match");
+    this.runTick();
+    console.debug("Current match update and tick complete for match:", match);
+}
 state.setMode=function(mode) {
     console.log("Setting state mode:", mode);
     this.mode = mode;
@@ -690,7 +706,7 @@ state.runTick=function()
         if (new Date(currentMatch.times.game.end).getTime()< (Date.now()-(5*1000)))
         {
             //get the next match
-            state.currentMatch=getNextMatch();
+            state.setCurrentMatch(getNextMatch());
         }
     }
     else
@@ -749,7 +765,7 @@ onMatchUpdate = function(match)
     match=match[0]
     if (match.length==0)
         return;
-    state.currentMatch=match;
+    state.setCurrentMatch(match);
 }
 
 // Delays affect the schedule -- reload when that happens
@@ -815,8 +831,7 @@ recievedMatches = function(matches)
     //store the matches in the cache
     cache["matches"]=matches;
 
-    state.currentMatch=getNextMatch();
-    overlay.progressCounter.set_match(state.currentMatch);
+    state.setCurrentMatch(getNextMatch());
 }
 
 
