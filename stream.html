@@ -752,8 +752,15 @@ onMatchUpdate = function(match)
     state.currentMatch=match;
 }
 
+// Delays affect the schedule -- reload when that happens
 onDelayUpdate = function() {
     console.log("updated delay, reloading matches");
+    comp.matches(recievedMatches);
+}
+
+// Match releases can affect the schedule -- reload when that happens
+onLastReleasedMatchUpdate = function() {
+    console.log("updated match release, reloading matches");
     comp.matches(recievedMatches);
 }
 
