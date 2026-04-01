@@ -176,6 +176,13 @@ function buildTemplate(templateQuerySelector, replacements)
 
 function isHeld(match, when)
 {
+    if (!match.times.hasOwnProperty('operations')) {
+        // Older SRComp HTTP APIs which don't know about match operations.
+        return false;
+    }
+
+    // Note: match operations & releasing is not yet finalised.
+
     const now = when || Date.now();
     const releaseTime = new Date(match.times.operations.release_threshold);
     return now > releaseTime && !match.is_released;
@@ -476,6 +483,9 @@ overlay.matchCounter={
 
         if (isHeld(match, now))
         {
+            // Note: match operations & releasing is not yet finalised.
+            // Rely on isHeld guarding against older SRComp HTTP APIs.
+
             const releaseTime = new Date(match.times.operations.release_threshold);
             this.target=0;
             this._setTimeStr(
