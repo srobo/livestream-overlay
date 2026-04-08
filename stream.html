@@ -696,6 +696,11 @@ onDelayUpdate = function() {
     comp.matches(recievedMatches);
 }
 
+onMatchesUpdate = function() {
+    console.log("updated matches, reloading matches");
+    comp.matches(recievedMatches);
+}
+
 
 setTimeout(function() {
     fakematch=[{
