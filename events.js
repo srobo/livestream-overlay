@@ -28,12 +28,6 @@ if (!!window.EventSource) {
     }
   }, false);
 
-  eventSource.addEventListener('matches', function(e){
-    if (typeof onMatchesUpdate == 'function') {
-        onMatchesUpdate(JSON.parse(e.data));
-    }
-  }, false);
-
   eventSource.addEventListener('match', function(e){
     if (typeof onMatchUpdate == 'function') {
         onMatchUpdate(JSON.parse(e.data));
