@@ -22,6 +22,12 @@ if (!!window.EventSource) {
     }
   }, false);
 
+  eventSource.addEventListener('last-released-match', function(e){
+    if (typeof onLastReleasedMatchUpdate == 'function') {
+        onLastReleasedMatchUpdate(JSON.parse(e.data));
+    }
+  }, false);
+
   eventSource.addEventListener('last-scored-match', function(e){
     if (typeof onLastScoredMatchUpdate == 'function') {
         onLastScoredMatchUpdate(JSON.parse(e.data));

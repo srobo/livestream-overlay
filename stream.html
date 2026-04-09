@@ -174,6 +174,20 @@ function buildTemplate(templateQuerySelector, replacements)
     return content;
 }
 
+function isHeld(match, when)
+{
+    if (!match.times.hasOwnProperty('operations')) {
+        // Older SRComp HTTP APIs which don't know about match operations.
+        return false;
+    }
+
+    // Note: match operations & releasing is not yet finalised.
+
+    const now = when || Date.now();
+    const releaseTime = new Date(match.times.operations.release_threshold);
+    return now > releaseTime && !match.is_released;
+}
+
 cache={};
 
 teams={}
@@ -417,6 +431,15 @@ overlay.matchCounter={
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Matches begin at:");
                 this.fixedClock=true;
+                this.static=false;
+                this.show();
+                break;
+            // A match is held
+            case "hold":
+                $("#match-counter").removeClass("clock-only");
+                $("#match-counter .clock-info").html("Hold:")
+                this.fixedClock=true;
+                this.static=true;
                 this.show();
                 break;
             // A short time period between matches
@@ -424,6 +447,7 @@ overlay.matchCounter={
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Next Match:")
                 this.fixedClock=false;
+                this.static=false;
                 this.show();
                 break;
             // During a match
@@ -431,6 +455,7 @@ overlay.matchCounter={
                 $("#match-counter").addClass("clock-only");
                 $("#match-counter .clock-info").html("")
                 this.fixedClock=false;
+                this.static=false;
                 this.show();
                 break;
             // A break between matches
@@ -438,6 +463,7 @@ overlay.matchCounter={
                 $("#match-counter").removeClass("clock-only");
                 $("#match-counter .clock-info").html("Matches resume at:")
                 this.fixedClock=true;
+                this.static=false;
                 this.show();
                 break;
             // The end of the current event
@@ -454,6 +480,20 @@ overlay.matchCounter={
         end= new Date(match.times.game.end)
 
         now = new Date();
+
+        if (isHeld(match, now))
+        {
+            // Note: match operations & releasing is not yet finalised.
+            // Rely on isHeld guarding against older SRComp HTTP APIs.
+
+            const releaseTime = new Date(match.times.operations.release_threshold);
+            this.target=0;
+            this._setTimeStr(
+                this.formatDeltaMinutesSeconds(start - releaseTime),
+            );
+            this.set_mode("hold");
+            return;
+        }
 
         if (start<now)
         {
@@ -501,11 +541,16 @@ overlay.matchCounter={
     },
 
     fixedClock: false,
+    static: false,
     target:0,
 
     /* clock tick function called every 1/10th of a second */
     runTick: function()
     {
+        if (this.static) {
+            return;
+        }
+
         if (this.fixedClock)
         {
             if (this.target<(Date.now()+(5*60*1000)))
@@ -535,6 +580,19 @@ overlay.matchCounter={
 <script>
 
 state={}
+
+state.match_start_hold=function(match)
+{
+    console.debug('match_start_hold')
+    overlay.scores.hide();
+    overlay.next.setTeams(match)
+    setTimeout(overlay.next.show,1);
+    overlay.zones.hide();
+    overlay.matchCounter.setNextMatch(match)
+    overlay.progressCounter.set_match(match);
+    overlay.progressCounter.show();
+    console.debug('/match_start_hold');
+}
 
 state.match_start_minus_30=function(match)
 {
@@ -581,6 +639,7 @@ state.match_end=function(match)
     overlay.scores.hide();
     overlay.next.hide();
     overlay.zones.hide();
+    overlay.progressCounter.set_match(match);
     overlay.progressCounter.show();
     overlay.matchCounter.setNextMatch(match)
     console.debug('/match_end');
@@ -606,6 +665,22 @@ state.match_end_plus_10=function(match)
 state.currentMatch=null;
 state.mode=null;
 
+state.setCurrentMatch=function(match) {
+    // Prevent recursion -- setMode can update the current match. If it's a
+    // different match, then that's fine, however if it's the same match again
+    // then we're potentially infinitely recursing. We shouldn't error though --
+    // other cases of re-setting the same match are legitimate.
+    if (match == this.currentMatch) {
+        console.log("Current match already set:", match);
+        return;
+    }
+    console.log("Setting current match:", match);
+    this.currentMatch = match;
+    // Refresh the current mode with the new match information.
+    this.setMode("new_match");
+    this.runTick();
+    console.debug("Current match update and tick complete for match:", match);
+}
 state.setMode=function(mode) {
     console.log("Setting state mode:", mode);
     this.mode = mode;
@@ -623,7 +698,15 @@ state.runTick=function()
         return;
     }
 
-    if (new Date(currentMatch.times.game.start).getTime()< Date.now())
+    if (isHeld(currentMatch))
+    {
+        if (this.mode!="hold")
+        {
+            state.match_start_hold(currentMatch);
+            this.setMode("hold");
+        }
+    }
+    else if (new Date(currentMatch.times.game.start).getTime()< Date.now())
     {
         //match has started;
         if(this.mode!="match")
@@ -634,7 +717,7 @@ state.runTick=function()
         if (new Date(currentMatch.times.game.end).getTime()< (Date.now()-(5*1000)))
         {
             //get the next match
-            state.currentMatch=getNextMatch();
+            state.setCurrentMatch(getNextMatch());
         }
     }
     else
@@ -685,22 +768,35 @@ onTeamUpdate = function(team)
     if (teams.length>=8) overlay.scores.updateScores(teams);
 }
 
-onMatchUpdate = function(match)
+onMatchUpdate = function(matches)
 {
     //extract the match for the required arena
-    if (match.length==0)
+    var match = matches.find(m => m.arena == ARENA);
+    if (!match) {
+        // no current match -- likely a gap, but can indicate that the schedule
+        // has changed creating a gap where there wasn't one previously. Reload
+        // the schedule so our cache is up to date, but don't override the
+        // current state immediately (for smoothness while we get the new data).
+        console.log("empty matches event, reloading matches");
+        comp.matches(recievedMatches);
         return;
-    match=match[0]
-    if (match.length==0)
-        return;
-    state.currentMatch=match;
+    }
+    state.setCurrentMatch(match);
 }
 
+// Delays affect the schedule -- reload when that happens
 onDelayUpdate = function() {
     console.log("updated delay, reloading matches");
     comp.matches(recievedMatches);
 }
 
+// Match releases can affect the schedule -- reload when that happens
+onLastReleasedMatchUpdate = function() {
+    console.log("updated match release, reloading matches");
+    comp.matches(recievedMatches);
+}
+
+// Match scoring can affect the constituents of matches -- reload when that happens
 onLastScoredMatchUpdate = function() {
     console.log("updated last-scored-match, reloading matches");
     comp.matches(recievedMatches);
@@ -727,6 +823,7 @@ getNextMatch = function()
     {
         let match = cache.matches.matches[matchID];
         if(match.arena!=ARENA) continue;
+        if(isHeld(match, now)) return match;
         if(new Date(match.times.game.end).getTime()<now) continue;
 
         return match;
@@ -756,8 +853,7 @@ recievedMatches = function(matches)
     //store the matches in the cache
     cache["matches"]=matches;
 
-    state.currentMatch=getNextMatch();
-    overlay.progressCounter.set_match(state.currentMatch);
+    state.setCurrentMatch(getNextMatch());
 }
 
 
