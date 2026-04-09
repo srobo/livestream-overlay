@@ -796,6 +796,12 @@ onLastReleasedMatchUpdate = function() {
     comp.matches(recievedMatches);
 }
 
+// Match scoring can affect the constituents of matches -- reload when that happens
+onLastScoredMatchUpdate = function() {
+    console.log("updated last-scored-match, reloading matches");
+    comp.matches(recievedMatches);
+}
+
 
 setTimeout(function() {
     fakematch=[{
