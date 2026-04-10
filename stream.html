@@ -579,6 +579,11 @@ overlay.matchCounter={
 </script>
 <script>
 
+// By default (when this is false), show the "Up Next" block (top left) at 30s
+// before the match, then move to the "zones" block at 10s.
+// Alternatively (when true), go direct to the "zones" block at 30s.
+const USE_ZONES_FOR_UP_NEXT = true;
+
 state={}
 
 state.match_start_hold=function(match)
@@ -598,9 +603,18 @@ state.match_start_minus_30=function(match)
 {
     console.debug('match_start_minus_30')
     overlay.scores.hide();
-    overlay.next.setTeams(match)
-    setTimeout(overlay.next.show,1);
-    overlay.zones.hide();
+    if (USE_ZONES_FOR_UP_NEXT)
+    {
+        overlay.next.hide();
+        overlay.zones.setTeams(match)
+        overlay.zones.show();
+    }
+    else
+    {
+        overlay.next.setTeams(match)
+        setTimeout(overlay.next.show,1);
+        overlay.zones.hide();
+    }
     overlay.matchCounter.setNextMatch(match)
     overlay.progressCounter.set_match(match);
     overlay.progressCounter.show();
@@ -611,9 +625,12 @@ state.match_start_minus_10=function(match)
 {
     console.debug('match_start_minus_10')
     overlay.scores.hide();
-    overlay.next.hide();
-    overlay.zones.setTeams(match)
-    overlay.zones.show();
+    if (!USE_ZONES_FOR_UP_NEXT)
+    {
+        overlay.next.hide();
+        overlay.zones.setTeams(match)
+        overlay.zones.show();
+    }
     overlay.matchCounter.setNextMatch(match)
     overlay.progressCounter.set_match(match);
     overlay.progressCounter.show();
